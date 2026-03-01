@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects – Tomas Bejholt</title>
+
+    <link rel="icon" type="image/png" href="img/tomas-icon3.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+
+    <meta name="description" content="Projects by Tomas Bejholt – Python, AI, and web development." />
+  </head>
+
+  <body>
+    <!-- ANIMATED BLOB BACKGROUND -->
+    <div class="bg-blobs" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <a href="index.html" class="nav-logo">TB</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html"    class="nav-link">Home</a></li>
+        <li><a href="about.html"    class="nav-link">About</a></li>
+        <li><a href="projects.html" class="nav-link active">Projects</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- PAGE HEADER -->
+    <div class="projects-header fade-in">
+      <h1>My Projects</h1>
+      <p>A growing collection of things I build during my studies at Nackademin. More on the way.</p>
+    </div>
+
+    <!-- PROJECTS GRID -->
+    <div class="projects-grid">
+
+      <!-- ── NEON SNAKE ── -->
+      <div class="project-card fade-in">
+        <div class="project-card-header">
+          <span class="project-tag">JavaScript · Canvas API</span>
+          <h3>Neon Snake</h3>
+        </div>
+        <div class="project-card-body">
+          <p>
+            Classic Snake rebuilt with a neon aesthetic. Vanilla JS and Canvas API,
+            no libraries. Touch-swipe support and localStorage high score.
+          </p>
+
+          <div class="game-wrapper">
+            <!-- HUD -->
+            <div class="game-hud">
+              <div>Score&nbsp;<span class="score-val" id="score">0</span></div>
+              <div>Best&nbsp;<span class="score-val" id="highscore">0</span></div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="canvas-wrapper">
+              <canvas id="snake-canvas"></canvas>
+
+              <div class="game-overlay" id="game-overlay">
+                <div class="overlay-content">
+                  <h3 id="overlay-title">NEON SNAKE</h3>
+                  <p id="overlay-msg">Arrow keys · WASD · Swipe</p>
+                  <p class="overlay-score" id="overlay-score"></p>
+                  <button class="btn game-btn" id="start-btn">Play</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="controls-hint">
+              <span>↑↓←→ / WASD to steer</span>
+              <span>Mobile: swipe on canvas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── GOTLAND EXPLORER ── -->
+      <div class="project-card fade-in delay-1">
+        <div class="project-card-header">
+          <span class="project-tag">Python · FastAPI · SMHI API</span>
+          <h3>Gotland Explorer</h3>
+        </div>
+        <div class="project-card-body">
+          <p>
+            REST API serving live Gotland data — real-time SMHI weather, curated
+            places, ferry schedules, and a day-trip planner. Hosted on Render,
+            fetched directly by this portfolio.
+          </p>
+
+          <!-- Live widget -->
+          <div class="gtl-widget">
+            <div class="gtl-weather-strip" id="gtl-weather">
+              <span class="gtl-dim">Fetching weather…</span>
+            </div>
+            <div class="gtl-controls">
+              <select class="gtl-select" id="gtl-start">
+                <option value="visby">Visby</option>
+                <option value="slite">Slite</option>
+                <option value="hemse">Hemse</option>
+              </select>
+              <select class="gtl-select" id="gtl-interest">
+                <option value="natur">Nature</option>
+                <option value="kultur">Culture</option>
+                <option value="mat">Food</option>
+              </select>
+              <select class="gtl-select" id="gtl-hours">
+                <option value="4">4 hrs</option>
+                <option value="6" selected>6 hrs</option>
+                <option value="8">8 hrs</option>
+              </select>
+              <button class="btn game-btn gtl-plan-btn" id="gtl-plan-btn">Plan day →</button>
+            </div>
+            <div class="gtl-result" id="gtl-result"></div>
+          </div>
+
+          <div class="project-links">
+            <a href="https://github.com/tomasbejholt" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+            <a href="http://localhost:8000/docs" class="btn" target="_blank" rel="noopener" id="gtl-api-link">Live API</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>© 2026 Tomas Bejholt – All rights reserved</p>
+    </footer>
+
+    <script>
+      // ── Hamburger ──
+      const hamburger = document.getElementById('hamburger');
+      const navLinks  = document.getElementById('nav-links');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        navLinks.classList.toggle('open');
+      });
+      navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        navLinks.classList.remove('open');
+      }));
+
+      // ── Intersection Observer ──
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+      // ══════════════════════════════════════
+      //  NEON SNAKE GAME
+      // ══════════════════════════════════════
+      (() => {
+        const canvas   = document.getElementById('snake-canvas');
+        const ctx      = canvas.getContext('2d');
+        const overlay  = document.getElementById('game-overlay');
+        const titleEl  = document.getElementById('overlay-title');
+        const msgEl    = document.getElementById('overlay-msg');
+        const scoreOvEl = document.getElementById('overlay-score');
+        const startBtn = document.getElementById('start-btn');
+        const scoreEl  = document.getElementById('score');
+        const hsEl     = document.getElementById('highscore');
+
+        const GRID = 20;
+        let CELL;
+
+        let snake, dir, nextDir, food;
+        let score, highScore;
+        let speed;
+        let gameState = 'idle';
+        let lastStep  = 0;
+        let rafId;
+
+        // ── Size canvas to its container ──
+        function sizeCanvas() {
+          const w = canvas.parentElement.clientWidth;
+          const size = Math.min(w, 440);
+          canvas.width  = size;
+          canvas.height = size;
+          CELL = Math.floor(size / GRID);
+        }
+
+        // ── Reset game state ──
+        function initGame() {
+          snake   = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+          dir     = { x: 1, y: 0 };
+          nextDir = { x: 1, y: 0 };
+          score   = 0;
+          speed   = 145;
+          spawnFood();
+          updateHUD();
+        }
+
+        function spawnFood() {
+          let pos;
+          do {
+            pos = { x: Math.floor(Math.random() * GRID), y: Math.floor(Math.random() * GRID) };
+          } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+          food = pos;
+        }
+
+        // ── Logic step ──
+        function step() {
+          dir = { x: nextDir.x, y: nextDir.y };
+          const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+          if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID) return endGame();
+          if (snake.some(s => s.x === head.x && s.y === head.y))             return endGame();
+
+          snake.unshift(head);
+
+          if (head.x === food.x && head.y === food.y) {
+            score++;
+            if (score > highScore) { highScore = score; localStorage.setItem('neonSnakeHS', highScore); }
+            updateHUD();
+            spawnFood();
+            speed = Math.max(60, 145 - score * 5);
+          } else {
+            snake.pop();
+          }
+        }
+
+        // ── Draw frame ──
+        function draw(ts) {
+          if (!snake || !food) return; // not yet initialised
+          ctx.fillStyle = '#0a0814';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Subtle grid
+          ctx.strokeStyle = 'rgba(139, 92, 246, 0.07)';
+          ctx.lineWidth = 0.5;
+          for (let i = 0; i <= GRID; i++) {
+            ctx.beginPath(); ctx.moveTo(i * CELL, 0); ctx.lineTo(i * CELL, canvas.height); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, i * CELL); ctx.lineTo(canvas.width, i * CELL); ctx.stroke();
+          }
+
+          // Food – pulsing orange (kontrast mot blå/teal orm)
+          const pulse = (Math.sin(ts * 0.005) + 1) * 0.5;
+          ctx.save();
+          ctx.shadowColor = '#f97316';
+          ctx.shadowBlur  = 8 + pulse * 18;
+          ctx.fillStyle   = `hsl(${24 + pulse * 10}, 95%, ${55 + pulse * 8}%)`;
+          ctx.beginPath();
+          ctx.arc(
+            food.x * CELL + CELL / 2,
+            food.y * CELL + CELL / 2,
+            CELL * 0.33 + pulse * CELL * 0.06,
+            0, Math.PI * 2
+          );
+          ctx.fill();
+          ctx.restore();
+
+          // Snake segments – cyan/teal
+          snake.forEach((seg, i) => {
+            const isHead = i === 0;
+            const t      = i / Math.max(snake.length - 1, 1);
+            const alpha  = isHead ? 1 : Math.max(0.22, 1 - t * 0.72);
+            const pad    = isHead ? 1 : 2;
+
+            ctx.save();
+            if (isHead) {
+              ctx.shadowColor = '#38bdf8';
+              ctx.shadowBlur  = 16;
+              ctx.fillStyle   = '#0ea5e9'; // sky blue head
+            } else {
+              ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
+              ctx.shadowBlur  = 5;
+              // gradient from sky blue → teal along body
+              ctx.fillStyle = `hsla(${196 + t * 20}, 85%, ${50 + alpha * 15}%, ${alpha})`;
+            }
+
+            const x = seg.x * CELL + pad;
+            const y = seg.y * CELL + pad;
+            const s = CELL - pad * 2;
+            const r = isHead ? 4 : 2;
+
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + s - r, y);
+            ctx.quadraticCurveTo(x + s, y, x + s, y + r);
+            ctx.lineTo(x + s, y + s - r);
+            ctx.quadraticCurveTo(x + s, y + s, x + s - r, y + s);
+            ctx.lineTo(x + r, y + s);
+            ctx.quadraticCurveTo(x, y + s, x, y + s - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          });
+        }
+
+        // ── rAF game loop ──
+        function loop(ts) {
+          if (gameState !== 'playing') return;
+          if (ts - lastStep >= speed) { step(); lastStep = ts; }
+          if (gameState === 'playing') {
+            draw(ts);
+            rafId = requestAnimationFrame(loop);
+          } else {
+            draw(ts); // final frame
+          }
+        }
+
+        function startGame() {
+          cancelAnimationFrame(rafId);
+          sizeCanvas();
+          initGame();
+          gameState = 'playing';
+          lastStep  = performance.now();
+          overlay.classList.add('hidden');
+          rafId = requestAnimationFrame(loop);
+        }
+
+        function endGame() {
+          gameState = 'over';
+          cancelAnimationFrame(rafId);
+          titleEl.textContent  = 'GAME OVER';
+          msgEl.textContent    = score === 0 ? 'Better luck next time!' : `You scored ${score} point${score !== 1 ? 's' : ''}!`;
+          scoreOvEl.textContent = highScore > 0 ? `High Score: ${highScore}` : '';
+          startBtn.textContent = 'Play Again';
+          overlay.classList.remove('hidden');
+        }
+
+        function updateHUD() {
+          scoreEl.textContent = score;
+          hsEl.textContent    = highScore;
+        }
+
+        // ── Keyboard ──
+        document.addEventListener('keydown', e => {
+          if (gameState !== 'playing') return;
+          if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+          switch (e.key) {
+            case 'ArrowUp':    case 'w': case 'W': if (dir.y !==  1) nextDir = { x: 0, y: -1 }; break;
+            case 'ArrowDown':  case 's': case 'S': if (dir.y !== -1) nextDir = { x: 0, y:  1 }; break;
+            case 'ArrowLeft':  case 'a': case 'A': if (dir.x !==  1) nextDir = { x: -1, y: 0 }; break;
+            case 'ArrowRight': case 'd': case 'D': if (dir.x !== -1) nextDir = { x:  1, y: 0 }; break;
+          }
+        });
+
+        // ── Touch swipe ──
+        let touchOrigin = null;
+        canvas.addEventListener('touchstart', e => {
+          touchOrigin = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          e.preventDefault();
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', e => {
+          if (!touchOrigin || gameState !== 'playing') return;
+          const dx = e.changedTouches[0].clientX - touchOrigin.x;
+          const dy = e.changedTouches[0].clientY - touchOrigin.y;
+          if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx >  20 && dir.x !== -1) nextDir = { x:  1, y: 0 };
+            if (dx < -20 && dir.x !==  1) nextDir = { x: -1, y: 0 };
+          } else {
+            if (dy >  20 && dir.y !== -1) nextDir = { x: 0, y:  1 };
+            if (dy < -20 && dir.y !==  1) nextDir = { x: 0, y: -1 };
+          }
+          touchOrigin = null;
+          e.preventDefault();
+        }, { passive: false });
+
+        // ── Resize ──
+        window.addEventListener('resize', () => {
+          if (gameState !== 'playing') sizeCanvas();
+        });
+
+        // ── Init ──
+        startBtn.addEventListener('click', startGame);
+        highScore = parseInt(localStorage.getItem('neonSnakeHS') || '0', 10);
+        sizeCanvas();
+        updateHUD();
+        draw(0);
+      })();
+
+      // ══════════════════════════════════════
+      //  GOTLAND EXPLORER WIDGET
+      //  After deploy, swap to your Render URL:
+      //  const API_BASE = 'https://gotland-explorer-api.onrender.com';
+      // ══════════════════════════════════════
+      (() => {
+        const API_BASE  = 'http://localhost:8000';
+        const weatherEl = document.getElementById('gtl-weather');
+        const resultEl  = document.getElementById('gtl-result');
+        const planBtn   = document.getElementById('gtl-plan-btn');
+
+        const WX = {
+          1:'☀️', 2:'🌤', 3:'⛅', 4:'🌥', 5:'☁️', 6:'☁️', 7:'🌫',
+          8:'🌧', 9:'🌦', 10:'🌧', 11:'⛈️', 12:'🌨', 13:'❄️', 14:'🌨',
+          15:'❄️', 16:'🌨', 17:'⛈️', 18:'🌦', 19:'🌧', 20:'🌧', 21:'⛈️',
+          22:'🌨', 23:'🌨', 24:'❄️', 25:'🌨', 26:'❄️', 27:'🌨'
+        };
+
+        // Fetch weather on page load
+        fetch(`${API_BASE}/api/weather`)
+          .then(r => r.json())
+          .then(data => {
+            weatherEl.innerHTML = Object.values(data).map(loc =>
+              `<span><strong>${loc.name}</strong> ${WX[loc.weather_symbol] || '🌡'} ${loc.temp_c}°C · ${loc.wind_ms} m/s</span>`
+            ).join('');
+          })
+          .catch(() => {
+            weatherEl.innerHTML = '<span class="gtl-dim">Weather unavailable — start the backend locally.</span>';
+          });
+
+        // Day planner
+        planBtn.addEventListener('click', async () => {
+          const start    = document.getElementById('gtl-start').value;
+          const interest = document.getElementById('gtl-interest').value;
+          const hours    = document.getElementById('gtl-hours').value;
+
+          planBtn.textContent = 'Planning…';
+          planBtn.disabled    = true;
+          resultEl.innerHTML  = '<span class="gtl-dim">Building your plan…</span>';
+
+          try {
+            const res  = await fetch(`${API_BASE}/api/dayplan?start=${start}&hours=${hours}&interest=${interest}`);
+            const plan = await res.json();
+
+            if (plan.error || !plan.plan?.length) {
+              resultEl.innerHTML = `<span class="gtl-dim">${plan.error || 'No stops found — try different settings.'}</span>`;
+              return;
+            }
+
+            resultEl.innerHTML = plan.plan.map(s => `
+              <div class="gtl-stop">
+                <span class="gtl-stop-name">${s.name}</span>
+                <span class="gtl-stop-meta">${s.distance_km} km · ${s.duration_hours}h · ${s.indoor ? 'indoors' : 'outdoors'}</span>
+                <span class="gtl-stop-desc">${s.description}</span>
+              </div>`).join('');
+          } catch {
+            resultEl.innerHTML = '<span class="gtl-error">Cannot reach API — is the backend running?</span>';
+          } finally {
+            planBtn.textContent = 'Plan day →';
+            planBtn.disabled    = false;
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

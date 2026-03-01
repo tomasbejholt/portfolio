@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Tomas</title>
+
+    <link rel="icon" type="image/png" href="img/tomas-icon3.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- ANIMATED BLOB BACKGROUND -->
+    <div class="bg-blobs" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <a href="index.html" class="nav-logo">TB</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html"    class="nav-link">Home</a></li>
+        <li><a href="about.html"    class="nav-link active">About</a></li>
+        <li><a href="projects.html" class="nav-link">Projects</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- SUB HERO -->
+    <div class="sub-hero fade-in">
+      <h1>About Me</h1>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="about-page-content fade-in">
+      <div class="glass-card">
+        <p>
+          My name is Tomas Bejholt, and my path into tech hasn't been straight,
+          but it has shaped me into the driven and solution‑oriented developer I
+          am today. I started working early and have experience in construction,
+          moving services, distribution, and running my own business in the
+          trucking industry. It wasn't until I studied CAD/CAM and CNC programming
+          that I discovered how naturally technology, logic, and digital creation
+          came to me.
+        </p>
+
+        <p>
+          That insight motivated me to complete both primary and secondary school
+          through Komvux, and I reached the point where I was only a few credits
+          short of qualifying for a technical foundation year at KTH. Life took a
+          different turn and I returned to the workforce, but my interest in
+          technology never faded. After many years in physically demanding jobs, I
+          decided to shift toward something sustainable, creative, and
+          future‑focused.
+        </p>
+
+        <p>
+          Today, I am studying <strong>PIA25 – Python Programming in AI</strong>
+          at Nackademin (August 2025 – May 2027). The program gives me a broad and
+          modern foundation in system development and AI, with courses such as:
+        </p>
+
+        <ul class="clean-list">
+          <li><span>Python Programming</span></li>
+          <li><span>Machine Learning &amp; Deep Learning</span></li>
+          <li><span>Machine Learning – Theory &amp; Practical Application</span></li>
+          <li><span>Database Technology</span></li>
+          <li><span>DevOps</span></li>
+          <li><span>Web Frameworks in Python</span></li>
+          <li><span>Business Skills</span></li>
+          <li><span>Thesis Project + LIA (internship)</span></li>
+        </ul>
+
+        <p>
+          I truly enjoy studying with my classmates and feel that I am finally in
+          the right place. I am now looking for an <strong>LIA internship</strong>
+          where I can continue growing, contribute with my drive, and learn from
+          experienced developers. I look forward to joining a team and helping
+          create something meaningful together.
+        </p>
+
+        <a href="index.html" class="btn btn-ghost">← Back to Home</a>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>© 2026 Tomas Bejholt – All rights reserved</p>
+    </footer>
+
+    <script>
+      const hamburger = document.getElementById('hamburger');
+      const navLinks  = document.getElementById('nav-links');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        navLinks.classList.toggle('open');
+      });
+      navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        navLinks.classList.remove('open');
+      }));
+
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+    </script>
+  </body>
+</html>

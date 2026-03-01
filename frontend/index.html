@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tomas – Web Developer</title>
+
+    <link rel="icon" type="image/png" href="img/tomas-icon3.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex, nofollow" />
+    <meta name="bingbot" content="noindex, nofollow" />
+    <meta name="description" content="Portfolio of Tomas – Fullstack & AI Developer." />
+  </head>
+
+  <body>
+    <!-- ANIMATED BLOB BACKGROUND -->
+    <div class="bg-blobs" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <a href="index.html" class="nav-logo">TB</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html"    class="nav-link active">Home</a></li>
+        <li><a href="about.html"    class="nav-link">About</a></li>
+        <li><a href="projects.html" class="nav-link">Projects</a></li>
+        <li><a href="#contact"      class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <header class="hero fade-in">
+      <div class="hero-glass">
+        <img src="img/Profile.jpg" alt="Portrait of Tomas" class="profile-img" />
+        <h1>Hello, I'm <span>Tomas</span></h1>
+        <p class="hero-subtitle"></p>
+        <div class="hero-btns">
+          <a href="#contact"      class="btn btn-primary">Contact Me</a>
+          <a href="projects.html" class="btn btn-ghost">Projects →</a>
+        </div>
+      </div>
+
+      <div class="scroll-indicator" aria-hidden="true">
+        <span>Scroll</span>
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+    </header>
+
+    <!-- ── ABOUT ── -->
+    <section class="section fade-in">
+      <div class="about-section glass-card">
+        <h2>About Me</h2>
+        <p>
+          My name is Tomas Bejholt, and my path into tech has gone through
+          construction, trucking, and running my own business. Today, I study
+          Python Programming in AI at Nackademin and I am looking for an
+          internship (LIA) where I can combine my practical background with
+          modern system development.
+        </p>
+        <a href="about.html"    class="btn btn-primary">Read More</a>
+        <a href="projects.html" class="btn btn-ghost">Projects →</a>
+      </div>
+    </section>
+
+    <!-- ── SKILLS ── -->
+    <section class="section fade-in">
+      <div class="skills-section glass-card">
+        <h2>Technologies I'm Learning &amp; Using</h2>
+        <div class="skills-list">
+          <div class="skill-card">Python</div>
+          <div class="skill-card">JavaScript</div>
+          <div class="skill-card">HTML &amp; CSS</div>
+          <div class="skill-card">SQL</div>
+          <div class="skill-card">Git &amp; GitHub</div>
+          <div class="skill-card">NumPy</div>
+          <div class="skill-card">Pandas</div>
+          <div class="skill-card">Scikit‑Learn</div>
+          <div class="skill-card">Machine Learning</div>
+          <div class="skill-card">Deep Learning</div>
+          <div class="skill-card">FastAPI</div>
+          <div class="skill-card">PostgreSQL</div>
+          <div class="skill-card">Docker (Basic)</div>
+          <div class="skill-card">REST APIs</div>
+          <div class="skill-card">Jupyter Notebook</div>
+          <div class="skill-card">Linux (Basic CLI)</div>
+          <div class="skill-card">Bash Commands</div>
+          <div class="skill-card">Terminal Workflow</div>
+          <div class="skill-card">JSON</div>
+          <div class="skill-card">VS Code</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SOCIAL ── -->
+    <section class="section fade-in">
+      <div class="social-section glass-card">
+        <h2>Find Me Online</h2>
+        <div class="social-btns">
+          <a href="https://www.linkedin.com/in/tomas-bejholt/" target="_blank" rel="noopener" class="btn linkedin-btn">LinkedIn</a>
+          <a href="https://github.com/tomasbejholt"            target="_blank" rel="noopener" class="btn github-btn">GitHub</a>
+          <a href="https://discord.gg/YOUR-DISCORD-CODE"        target="_blank" rel="noopener" class="btn discord-btn">Discord</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CONTACT ── -->
+    <section class="section fade-in" id="contact">
+      <div class="contact-section glass-card">
+        <h2>Contact Me</h2>
+        <form action="https://formspree.io/f/meeodjlv" method="POST" class="contact-form">
+          <label for="name">Name</label>
+          <input type="text"  id="name"    name="name"    required placeholder="Your name" />
+          <label for="email">Email</label>
+          <input type="email" id="email"   name="email"   required placeholder="your@email.com" />
+          <label for="message">Message</label>
+          <textarea           id="message" name="message" rows="5"   required placeholder="What's on your mind?"></textarea>
+          <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>© 2026 Tomas Bejholt – All rights reserved</p>
+    </footer>
+
+    <script>
+      // Hamburger
+      const hamburger = document.getElementById('hamburger');
+      const navLinks  = document.getElementById('nav-links');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        navLinks.classList.toggle('open');
+      });
+      navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        navLinks.classList.remove('open');
+      }));
+
+      // Intersection Observer
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+      // Typing animation
+      const subtitleEl = document.querySelector('.hero-subtitle');
+      const text = 'Fullstack | AI Developer • Modern Design Enthusiast';
+      const cursor = document.createElement('span');
+      cursor.className = 'typing-cursor';
+      subtitleEl.appendChild(cursor);
+      let i = 0;
+      setTimeout(() => {
+        const iv = setInterval(() => {
+          if (i < text.length) { subtitleEl.insertBefore(document.createTextNode(text[i++]), cursor); }
+          else { clearInterval(iv); setTimeout(() => cursor.remove(), 2500); }
+        }, 38);
+      }, 500);
+    </script>
+  </body>
+</html>
