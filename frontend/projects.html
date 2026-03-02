@@ -124,6 +124,10 @@
               <button class="btn game-btn gtl-plan-btn" id="gtl-plan-btn">Plan day →</button>
             </div>
             <div class="gtl-result" id="gtl-result"></div>
+            <div class="gtl-ferry-row">
+              <button class="btn btn-ghost gtl-ferry-btn" id="gtl-ferry-btn">Show ferries ↓</button>
+            </div>
+            <div class="gtl-ferry-result" id="gtl-ferry-result"></div>
           </div>
 
           <div class="project-links">
@@ -447,6 +451,53 @@
             planBtn.textContent = 'Plan day →';
             planBtn.disabled    = false;
           }
+        });
+      })();
+
+      // ── FERRY SCHEDULE ──
+      (() => {
+        const API_BASE  = 'https://portfolio-wivy.onrender.com';
+        const ferryBtn  = document.getElementById('gtl-ferry-btn');
+        const ferryEl   = document.getElementById('gtl-ferry-result');
+        let open = false;
+        let loaded = false;
+
+        ferryBtn.addEventListener('click', async () => {
+          if (open) {
+            ferryEl.style.display = 'none';
+            ferryBtn.textContent = 'Show ferries ↓';
+            open = false;
+            return;
+          }
+
+          if (!loaded) {
+            ferryBtn.textContent = 'Loading…';
+            ferryBtn.disabled = true;
+            try {
+              const res  = await fetch(`${API_BASE}/api/ferry`);
+              const data = await res.json();
+
+              ferryEl.innerHTML = `
+                <div class="gtl-ferry-grid">
+                  ${data.routes.map(r => `
+                    <div class="gtl-ferry-card">
+                      <div class="gtl-ferry-route">${r.from} → ${r.to}</div>
+                      <div class="gtl-ferry-times">${r.departures.map(t => `<span>${t}</span>`).join('')}</div>
+                      <div class="gtl-ferry-dur">⏱ ${r.duration_hours} h</div>
+                    </div>`).join('')}
+                </div>
+                <p class="gtl-dim gtl-ferry-note">${data.note}</p>`;
+              loaded = true;
+            } catch {
+              ferryEl.innerHTML = '<span class="gtl-error">Could not load ferry schedule.</span>';
+            } finally {
+              ferryBtn.disabled = false;
+            }
+          }
+
+          ferryEl.style.display = '';
+          ferryBtn.textContent = 'Hide ferries ↑';
+          open = true;
         });
       })();
     </script>

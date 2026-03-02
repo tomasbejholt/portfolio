@@ -841,6 +841,64 @@ footer {
 .gtl-dim   { color: #94a3b8; font-style: italic; }
 .gtl-error { color: #dc2626; font-style: italic; }
 
+.gtl-ferry-row {
+  padding: 8px 14px;
+  border-top: 1px solid rgba(3, 105, 161, 0.1);
+}
+.gtl-ferry-btn {
+  font-size: 0.82rem !important;
+  padding: 5px 14px !important;
+}
+.gtl-ferry-result {
+  padding: 0 14px;
+}
+.gtl-ferry-result:not(:empty) {
+  padding: 10px 14px;
+  border-top: 1px solid rgba(3, 105, 161, 0.1);
+}
+.gtl-ferry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 8px;
+}
+@media (max-width: 480px) {
+  .gtl-ferry-grid { grid-template-columns: 1fr; }
+}
+.gtl-ferry-card {
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(3, 105, 161, 0.12);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.gtl-ferry-route {
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: #0f172a;
+  margin-bottom: 5px;
+}
+.gtl-ferry-times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+.gtl-ferry-times span {
+  font-size: 0.78rem;
+  background: rgba(3, 105, 161, 0.08);
+  border-radius: 4px;
+  padding: 2px 7px;
+  color: #0369a1;
+}
+.gtl-ferry-dur {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+.gtl-ferry-note {
+  font-size: 0.72rem;
+  margin: 0;
+}
+
 .project-links {
   display: flex;
   gap: 4px;
