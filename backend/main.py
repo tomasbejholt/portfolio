@@ -9,9 +9,13 @@ import time
 from pathlib import Path
 from typing import Optional
 
+import os
+
+import anthropic
 import httpx
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 # ── App & CORS ────────────────────────────────────────────────────────────────
 
@@ -24,7 +28,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],   # Tillåt alla origins (portfolio på S3, localhost, etc.)
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -122,13 +126,39 @@ def parse_smhi(raw: dict) -> dict:
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 
+TOMAS_SYSTEM_PROMPT = """
+You are a portfolio assistant for Tomas Bejholt. Answer questions about him honestly and warmly.
+Answer in the same language the visitor writes in (Swedish or English).
+
+About Tomas:
+- Full name: John Tomas Louis Jakobsson Bejholt, goes by Tomas. Born 1984, 41 years old.
+- Lives in Stockholm, Sweden.
+- Currently studying PIA25 – Python Programming in AI at Nackademin (August 2025 – May 2027).
+- Completed courses so far: Python Programming, Database Technology, DevOps, Web Development, Frameworks in Python. Also studying Business Skills. Upcoming: Machine Learning & Deep Learning, Thesis Project, and LIA (internship).
+- Background: worked in construction, moving services, distribution, and ran his own trucking business. Discovered a passion for tech through CAD/CAM and CNC programming. Completed primary and secondary school through Komvux as an adult.
+- Projects: Neon Snake (JavaScript, Canvas API) and Gotland Explorer (Python, FastAPI, SMHI API – a REST API with live weather, places, ferry schedules, and a day-trip planner). Both are showcased on this portfolio.
+- Personal: has three children, enjoys outdoor activities.
+- Looking for an LIA internship in Stockholm. Open to any company or industry.
+- Contact: tomas_bejholt@outlook.com. LinkedIn and a contact form are also available on the portfolio site.
+
+Important guidelines:
+- Tomas is a student actively learning – never claim he is an expert or highly skilled in any area yet. Be honest about where he is in his journey.
+- Keep answers short, friendly, and to the point.
+- If asked something you don't know about Tomas, say so honestly.
+""".strip()
+
+
+class ChatRequest(BaseModel):
+    message: str
+
+
 @app.get("/", tags=["root"])
 async def root():
     """Hälsningssida – bekräftar att API:t är igång."""
     return {
         "message": "Gotland Explorer API är igång 🏝️",
         "docs":    "/docs",
-        "endpoints": ["/api/weather", "/api/places", "/api/ferry", "/api/dayplan"],
+        "endpoints": ["/api/weather", "/api/places", "/api/ferry", "/api/dayplan", "/api/chat"],
     }
 
 
@@ -333,3 +363,23 @@ async def get_dayplan(
             for p in selected
         ],
     }
+
+
+@app.post("/api/chat", tags=["chat"])
+async def chat(req: ChatRequest):
+    """
+    Tar emot ett meddelande och returnerar ett svar från en AI-assistent
+    som känner till Tomas Bejholt och kan svara på frågor om honom.
+    """
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="Chat is not configured.")
+
+    client = anthropic.Anthropic(api_key=api_key)
+    message = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=512,
+        system=TOMAS_SYSTEM_PROMPT,
+        messages=[{"role": "user", "content": req.message}],
+    )
+    return {"reply": message.content[0].text}
