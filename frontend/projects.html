@@ -40,7 +40,7 @@
     <!-- PAGE HEADER -->
     <div class="projects-header fade-in">
       <h1>My Projects</h1>
-      <p>A growing collection of things I build during my studies at Nackademin. More on the way.</p>
+      <p id="projects-subtitle"></p>
     </div>
 
     <!-- PROJECTS GRID -->
@@ -137,6 +137,39 @@
         </div>
       </div>
 
+      <!-- ── ASK TOMAS ── -->
+      <div class="project-card fade-in delay-2">
+        <div class="project-card-header">
+          <span class="project-tag">Python · FastAPI · Claude API</span>
+          <h3>Ask Tomas</h3>
+        </div>
+        <div class="project-card-body">
+          <p>
+            A small AI assistant that knows about me — my background, studies,
+            and projects. Ask it anything and it will answer honestly.
+          </p>
+
+          <div class="chat-widget">
+            <div class="chat-messages" id="chat-messages">
+              <div class="chat-msg chat-msg--bot">
+                Hi! I'm Tomas's portfolio assistant. Ask me anything about him.
+              </div>
+            </div>
+            <div class="chat-input-row">
+              <input
+                class="chat-input"
+                id="chat-input"
+                type="text"
+                placeholder="Ask something…"
+                maxlength="300"
+              />
+              <button class="btn game-btn chat-send-btn" id="chat-send-btn">
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- FOOTER -->
@@ -145,6 +178,22 @@
     </footer>
 
     <script>
+      // ── Typing animation ──
+      (() => {
+        const el = document.getElementById('projects-subtitle');
+        const text = "Work I've built throughout my time at Nackademin. Part exploration, part vibecoding, all genuine.";
+        const cursor = document.createElement('span');
+        cursor.className = 'typing-cursor';
+        el.appendChild(cursor);
+        let i = 0;
+        setTimeout(() => {
+          const iv = setInterval(() => {
+            if (i < text.length) { el.insertBefore(document.createTextNode(text[i++]), cursor); }
+            else { clearInterval(iv); setTimeout(() => cursor.remove(), 2500); }
+          }, 38);
+        }, 400);
+      })();
+
       // ── Hamburger ──
       const hamburger = document.getElementById('hamburger');
       const navLinks  = document.getElementById('nav-links');
@@ -452,6 +501,49 @@
             planBtn.disabled    = false;
           }
         });
+      })();
+
+      // ── ASK TOMAS CHAT ──
+      (() => {
+        const API_BASE   = 'https://portfolio-wivy.onrender.com';
+        const messagesEl = document.getElementById('chat-messages');
+        const inputEl    = document.getElementById('chat-input');
+        const sendBtn    = document.getElementById('chat-send-btn');
+
+        function addMsg(text, role) {
+          const div = document.createElement('div');
+          div.className = `chat-msg chat-msg--${role}`;
+          div.textContent = text;
+          messagesEl.appendChild(div);
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        async function send() {
+          const msg = inputEl.value.trim();
+          if (!msg) return;
+          inputEl.value    = '';
+          sendBtn.disabled = true;
+          addMsg(msg, 'user');
+          addMsg('…', 'bot');
+
+          try {
+            const res  = await fetch(`${API_BASE}/api/chat`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: msg }),
+            });
+            const data = await res.json();
+            messagesEl.lastChild.textContent = data.reply || 'No response.';
+          } catch {
+            messagesEl.lastChild.textContent = 'Could not reach the assistant.';
+          } finally {
+            sendBtn.disabled = false;
+            inputEl.focus();
+          }
+        }
+
+        sendBtn.addEventListener('click', send);
+        inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
       })();
 
       // ── FERRY SCHEDULE ──

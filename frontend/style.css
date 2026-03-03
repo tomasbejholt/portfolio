@@ -841,6 +841,62 @@ footer {
 .gtl-dim   { color: #94a3b8; font-style: italic; }
 .gtl-error { color: #dc2626; font-style: italic; }
 
+/* ── Ask Tomas chat widget ── */
+.chat-widget {
+  margin: 4px 0 12px;
+  border-radius: 12px;
+  background: rgba(240, 247, 255, 0.55);
+  border: 1px solid rgba(3, 105, 161, 0.13);
+  overflow: hidden;
+}
+.chat-messages {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.chat-msg {
+  max-width: 85%;
+  padding: 7px 12px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.chat-msg--bot {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(3, 105, 161, 0.12);
+  color: #1e293b;
+  align-self: flex-start;
+}
+.chat-msg--user {
+  background: var(--accent);
+  color: #fff;
+  align-self: flex-end;
+}
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid rgba(3, 105, 161, 0.1);
+}
+.chat-input {
+  flex: 1;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(3, 105, 161, 0.2);
+  background: rgba(255,255,255,0.8);
+  color: #1e293b;
+  outline: none;
+}
+.chat-input:focus { border-color: var(--accent); }
+.chat-send-btn { padding: 7px 16px !important; flex-shrink: 0; }
+.chat-input { min-width: 0; }
+
 .gtl-ferry-row {
   padding: 8px 14px;
   border-top: 1px solid rgba(3, 105, 161, 0.1);
