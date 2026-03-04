@@ -72,8 +72,9 @@
               <canvas id="snake-canvas"></canvas>
 
               <div class="game-overlay" id="game-overlay">
-                <div class="overlay-content">
-                  <h3 id="overlay-title">NEON SNAKE</h3>
+                <!-- ── Startvy ── -->
+                <div class="overlay-content" id="overlay-start">
+                  <h3>NEON SNAKE</h3>
                   <div class="mode-select" id="mode-select">
                     <button class="mode-btn active" data-mode="easy">Easy</button>
                     <button class="mode-btn" data-mode="hard">Hard</button>
@@ -83,13 +84,23 @@
                     <button class="mode-btn" data-ctrl="buttons">Knappar</button>
                   </div>
                   <p id="overlay-msg">Arrow keys · WASD · Swipe</p>
-                  <p class="overlay-score" id="overlay-score"></p>
                   <button class="btn game-btn" id="start-btn">Play</button>
-                  <div class="name-entry" id="name-entry">
-                    <input class="name-input" id="player-name" maxlength="20" placeholder="Ditt namn" autocomplete="off" />
-                    <button class="btn game-btn" id="submit-score-btn">Skicka in</button>
-                  </div>
+                  <button class="sb-link" id="show-sb-btn">Scoreboard</button>
+                </div>
+
+                <!-- ── Game over-vy ── -->
+                <div class="overlay-content" id="overlay-over" style="display:none">
+                  <h3 class="sb-title">GAME OVER</h3>
+                  <p id="overlay-msg-over"></p>
                   <ol class="leaderboard" id="leaderboard"></ol>
+                  <button class="btn game-btn" id="back-to-start-btn">Klar</button>
+                </div>
+
+                <!-- ── Scoreboard-vy ── -->
+                <div class="overlay-content" id="overlay-sb" style="display:none">
+                  <h3 class="sb-title" id="sb-title">SCOREBOARD</h3>
+                  <ol class="leaderboard" id="leaderboard-sb"></ol>
+                  <button class="sb-link" id="back-sb-btn">← Back</button>
                 </div>
               </div>
             </div>
@@ -239,17 +250,17 @@
       (() => {
         const canvas        = document.getElementById('snake-canvas');
         const ctx           = canvas.getContext('2d');
-        const overlay       = document.getElementById('game-overlay');
-        const titleEl       = document.getElementById('overlay-title');
-        const msgEl         = document.getElementById('overlay-msg');
-        const scoreOvEl     = document.getElementById('overlay-score');
-        const startBtn      = document.getElementById('start-btn');
-        const scoreEl       = document.getElementById('score');
-        const hsEl          = document.getElementById('highscore');
-        const nameEntryEl   = document.getElementById('name-entry');
-        const playerNameEl  = document.getElementById('player-name');
-        const submitScoreBtn= document.getElementById('submit-score-btn');
-        const leaderboardEl = document.getElementById('leaderboard');
+        const overlay         = document.getElementById('game-overlay');
+        const startBtn        = document.getElementById('start-btn');
+        const scoreEl         = document.getElementById('score');
+        const hsEl            = document.getElementById('highscore');
+        const leaderboardEl   = document.getElementById('leaderboard');
+        const leaderboardSbEl = document.getElementById('leaderboard-sb');
+        const overlayStartEl  = document.getElementById('overlay-start');
+        const overlayOverEl   = document.getElementById('overlay-over');
+        const overlayMsgOverEl= document.getElementById('overlay-msg-over');
+        const overlaySbEl     = document.getElementById('overlay-sb');
+        const sbTitleEl       = document.getElementById('sb-title');
 
         const API_SCORES = 'https://portfolio-wivy.onrender.com/api/scores';
         let globalScores = [];
@@ -316,7 +327,7 @@
 
           if (head.x === food.x && head.y === food.y) {
             score++;
-            if (score > highScore) { highScore = score; localStorage.setItem('neonSnakeHS', highScore); }
+            if (score > highScore) { highScore = score; localStorage.setItem('neonSnakeHS_' + mode, highScore); }
             updateHUD();
             spawnFood();
             speed = Math.max(60, 145 - score * 5);
@@ -407,14 +418,23 @@
           }
         }
 
+        function showStartScreen() {
+          gameState = 'idle';
+          overlayOverEl.style.display  = 'none';
+          overlaySbEl.style.display    = 'none';
+          overlayStartEl.style.display = 'block';
+          overlay.classList.remove('hidden');
+          dpadEl.style.display = 'none';
+        }
+
         function startGame() {
           cancelAnimationFrame(rafId);
           sizeCanvas();
           initGame();
           gameState = 'playing';
           lastStep  = performance.now();
+          overlayStartEl.style.display = 'none';
           overlay.classList.add('hidden');
-          // Visa d-pad bara om användaren valt knappar (och enheten är touch)
           dpadEl.style.display = ctrlMode === 'buttons' ? 'grid' : 'none';
           rafId = requestAnimationFrame(loop);
         }
@@ -422,17 +442,16 @@
         function endGame() {
           gameState = 'over';
           cancelAnimationFrame(rafId);
-          titleEl.textContent  = 'GAME OVER';
-          msgEl.textContent    = score === 0 ? 'Better luck next time!' : `You scored ${score} point${score !== 1 ? 's' : ''}!`;
-          scoreOvEl.textContent = highScore > 0 ? `High Score: ${highScore}` : '';
-          startBtn.textContent = 'Play Again';
+          dpadEl.style.display = 'none';
 
-          // Visa namnfält om score > 0 och kan ta sig in på listan
-          const qualifies = score > 0 && (globalScores.length < 10 || score > globalScores[globalScores.length - 1]?.score);
-          nameEntryEl.style.display = qualifies ? 'flex' : 'none';
-          playerNameEl.value = '';
+          overlayMsgOverEl.textContent = score === 0
+            ? 'Bättre lycka nästa gång!'
+            : `Du fick ${score} poäng!`;
 
-          renderLeaderboard();
+          renderLeaderboardGameOver();
+
+          overlayStartEl.style.display = 'none';
+          overlayOverEl.style.display  = 'block';
           overlay.classList.remove('hidden');
         }
 
@@ -442,20 +461,63 @@
             const res = await fetch(`${API_SCORES}?mode=${mode}`);
             globalScores = await res.json();
           } catch (_) { globalScores = []; }
-          renderLeaderboard();
         }
 
-        function renderLeaderboard() {
-          if (!globalScores.length) { leaderboardEl.innerHTML = ''; return; }
-          leaderboardEl.innerHTML = globalScores.slice(0, 10).map((s, i) =>
+        function buildRows(scores) {
+          if (!scores.length) return '<li class="lb-empty">Inga scores än – var först!</li>';
+          return scores.slice(0, 10).map((s, i) =>
             `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`
           ).join('');
         }
 
+        function renderLeaderboardGameOver() {
+          // Sätt in spelarens score på rätt plats för att hitta position
+          const withPlayer = score > 0
+            ? [...globalScores, { name: '__player__', score }]
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 10)
+            : globalScores.slice(0, 10);
+
+          const playerIdx = withPlayer.findIndex(s => s.name === '__player__');
+
+          if (!withPlayer.length) {
+            leaderboardEl.innerHTML = '<li class="lb-empty">Inga scores än – var först!</li>';
+            return;
+          }
+
+          leaderboardEl.innerHTML = withPlayer.map((s, i) => {
+            if (i === playerIdx) {
+              return `<li class="lb-you">
+                <span class="lb-rank">${i + 1}</span>
+                <input class="name-input lb-name-input" id="player-name" maxlength="20" placeholder="Ditt namn" autocomplete="off" />
+                <span class="lb-score">${s.score}</span>
+              </li>`;
+            }
+            return `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`;
+          }).join('');
+
+          const backBtn = document.getElementById('back-to-start-btn');
+          if (playerIdx !== -1) {
+            backBtn.textContent = 'Submit';
+            const input = document.getElementById('player-name');
+            input.focus();
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') submitScore(); });
+          } else {
+            backBtn.textContent = 'Back';
+          }
+        }
+
+        function renderLeaderboardSb() {
+          sbTitleEl.textContent = `SCOREBOARD – ${mode.toUpperCase()}`;
+          leaderboardSbEl.innerHTML = buildRows(globalScores);
+        }
+
         async function submitScore() {
-          const name = playerNameEl.value.trim();
-          if (!name) { playerNameEl.focus(); return; }
-          submitScoreBtn.disabled = true;
+          const input = document.getElementById('player-name');
+          if (!input) return;
+          const name = input.value.trim();
+          if (!name) { input.focus(); return; }
+          input.disabled = true;
           try {
             const res = await fetch(API_SCORES, {
               method: 'POST',
@@ -464,9 +526,7 @@
             });
             globalScores = await res.json();
           } catch (_) {}
-          nameEntryEl.style.display = 'none';
-          renderLeaderboard();
-          submitScoreBtn.disabled = false;
+          showStartScreen();
         }
 
         function updateHUD() {
@@ -538,6 +598,8 @@
           if (!btn) return;
           mode = btn.dataset.mode;
           document.querySelectorAll('#mode-select .mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+          highScore = parseInt(localStorage.getItem('neonSnakeHS_' + mode) || '0', 10);
+          updateHUD();
           fetchScores();
         });
 
@@ -549,12 +611,32 @@
           document.querySelectorAll('#ctrl-select .mode-btn').forEach(b => b.classList.toggle('active', b === btn));
         });
 
+        // ── Scoreboard-vy ──
+        document.getElementById('show-sb-btn').addEventListener('click', async () => {
+          await fetchScores();
+          overlayStartEl.style.display = 'none';
+          overlaySbEl.style.display    = 'block';
+          renderLeaderboardSb();
+        });
+
+        document.getElementById('back-sb-btn').addEventListener('click', () => {
+          overlaySbEl.style.display    = 'none';
+          overlayStartEl.style.display = 'block';
+        });
+
+        document.getElementById('back-to-start-btn').addEventListener('click', async () => {
+          const input = document.getElementById('player-name');
+          if (input && input.value.trim()) {
+            await submitScore();
+          } else {
+            showStartScreen();
+          }
+        });
+
         // ── Init ──
         startBtn.addEventListener('click', startGame);
-        submitScoreBtn.addEventListener('click', submitScore);
-        playerNameEl.addEventListener('keydown', e => { if (e.key === 'Enter') submitScore(); });
-        highScore = parseInt(localStorage.getItem('neonSnakeHS') || '0', 10);
-        dpadEl.style.display = 'none'; // dölj d-pad tills spelet startar med knappar
+        highScore = parseInt(localStorage.getItem('neonSnakeHS_' + mode) || '0', 10);
+        dpadEl.style.display = 'none';
         sizeCanvas();
         updateHUD();
         fetchScores();
