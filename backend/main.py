@@ -16,6 +16,7 @@ import httpx
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from supabase import create_client
 
 # ── App & CORS ────────────────────────────────────────────────────────────────
 
@@ -37,7 +38,10 @@ app.add_middleware(
 DATA_DIR    = Path(__file__).parent / "data"
 CACHE_FILE  = DATA_DIR / "cache.json"
 PLACES_FILE = DATA_DIR / "places.json"
-SCORES_FILE = DATA_DIR / "scores.json"
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
 CACHE_TTL = 3600  # Sekunder (1 timme) innan väderdatan hämtas på nytt
 
@@ -157,23 +161,6 @@ class ScoreEntry(BaseModel):
     name: str
     score: int
     mode: str = "easy"
-
-
-def load_scores() -> dict:
-    if SCORES_FILE.exists():
-        data = json.loads(SCORES_FILE.read_text(encoding="utf-8"))
-        # Bakåtkompatibilitet: om filen är en lista (gammalt format), nollställ
-        if isinstance(data, list):
-            return {"easy": [], "hard": []}
-        return data
-    return {"easy": [], "hard": []}
-
-
-def save_scores(data: dict) -> None:
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    SCORES_FILE.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
 
 
 @app.get("/", tags=["root"])
@@ -414,22 +401,39 @@ async def get_scores(mode: str = Query("easy", description="Läge: easy | hard")
     """Returnerar top-10 highscore-listan för valt läge (easy eller hard)."""
     if mode not in ("easy", "hard"):
         raise HTTPException(status_code=422, detail="mode måste vara 'easy' eller 'hard'.")
-    return load_scores().get(mode, [])
+    if not supabase:
+        raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
+    res = (
+        supabase.table("scores")
+        .select("name, score")
+        .eq("mode", mode)
+        .order("score", desc=True)
+        .limit(10)
+        .execute()
+    )
+    return res.data
 
 
 @app.post("/api/scores", tags=["snake"])
 async def post_score(entry: ScoreEntry):
-    """Lägger till ett resultat i rätt läges highscore-lista och behåller top 10."""
+    """Lägger till ett resultat och returnerar uppdaterad top-10."""
     mode = entry.mode if entry.mode in ("easy", "hard") else "easy"
     name = entry.name.strip()[:20]
     if not name:
         raise HTTPException(status_code=422, detail="Namn får inte vara tomt.")
     if entry.score <= 0:
         raise HTTPException(status_code=422, detail="Score måste vara > 0.")
+    if not supabase:
+        raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
 
-    data = load_scores()
-    data[mode].append({"name": name, "score": entry.score})
-    data[mode].sort(key=lambda s: s["score"], reverse=True)
-    data[mode] = data[mode][:10]
-    save_scores(data)
-    return data[mode]
+    supabase.table("scores").insert({"name": name, "score": entry.score, "mode": mode}).execute()
+
+    res = (
+        supabase.table("scores")
+        .select("name, score")
+        .eq("mode", mode)
+        .order("score", desc=True)
+        .limit(10)
+        .execute()
+    )
+    return res.data
