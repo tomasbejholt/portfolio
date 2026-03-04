@@ -49,13 +49,15 @@
       <!-- ── NEON SNAKE ── -->
       <div class="project-card fade-in">
         <div class="project-card-header">
-          <span class="project-tag">JavaScript · Canvas API</span>
+          <span class="project-tag">JavaScript · Canvas API · FastAPI</span>
           <h3>Neon Snake</h3>
         </div>
         <div class="project-card-body">
           <p>
             Classic Snake rebuilt with a neon aesthetic. Vanilla JS and Canvas API,
-            no libraries. Touch-swipe support and localStorage high score.
+            no libraries. Choose between Easy (wall wrap) or Hard (walls kill),
+            with a live global leaderboard per difficulty backed by a FastAPI endpoint.
+            Mobile-friendly with swipe or on-screen controls.
           </p>
 
           <div class="game-wrapper">
@@ -72,16 +74,35 @@
               <div class="game-overlay" id="game-overlay">
                 <div class="overlay-content">
                   <h3 id="overlay-title">NEON SNAKE</h3>
+                  <div class="mode-select" id="mode-select">
+                    <button class="mode-btn active" data-mode="easy">Easy</button>
+                    <button class="mode-btn" data-mode="hard">Hard</button>
+                  </div>
+                  <div class="ctrl-select" id="ctrl-select">
+                    <button class="mode-btn active" data-ctrl="swipe">Swipe</button>
+                    <button class="mode-btn" data-ctrl="buttons">Knappar</button>
+                  </div>
                   <p id="overlay-msg">Arrow keys · WASD · Swipe</p>
                   <p class="overlay-score" id="overlay-score"></p>
                   <button class="btn game-btn" id="start-btn">Play</button>
+                  <div class="name-entry" id="name-entry">
+                    <input class="name-input" id="player-name" maxlength="20" placeholder="Ditt namn" autocomplete="off" />
+                    <button class="btn game-btn" id="submit-score-btn">Skicka in</button>
+                  </div>
+                  <ol class="leaderboard" id="leaderboard"></ol>
                 </div>
               </div>
             </div>
 
+            <div class="dpad" id="dpad">
+              <button class="dpad-btn dpad-up"    id="dpad-up">▲</button>
+              <button class="dpad-btn dpad-left"  id="dpad-left">◀</button>
+              <button class="dpad-btn dpad-down"  id="dpad-down">▼</button>
+              <button class="dpad-btn dpad-right" id="dpad-right">▶</button>
+            </div>
             <div class="controls-hint">
               <span>↑↓←→ / WASD to steer</span>
-              <span>Mobile: swipe on canvas</span>
+              <span>Mobile: swipe or use buttons</span>
             </div>
           </div>
         </div>
@@ -216,15 +237,25 @@
       //  NEON SNAKE GAME
       // ══════════════════════════════════════
       (() => {
-        const canvas   = document.getElementById('snake-canvas');
-        const ctx      = canvas.getContext('2d');
-        const overlay  = document.getElementById('game-overlay');
-        const titleEl  = document.getElementById('overlay-title');
-        const msgEl    = document.getElementById('overlay-msg');
-        const scoreOvEl = document.getElementById('overlay-score');
-        const startBtn = document.getElementById('start-btn');
-        const scoreEl  = document.getElementById('score');
-        const hsEl     = document.getElementById('highscore');
+        const canvas        = document.getElementById('snake-canvas');
+        const ctx           = canvas.getContext('2d');
+        const overlay       = document.getElementById('game-overlay');
+        const titleEl       = document.getElementById('overlay-title');
+        const msgEl         = document.getElementById('overlay-msg');
+        const scoreOvEl     = document.getElementById('overlay-score');
+        const startBtn      = document.getElementById('start-btn');
+        const scoreEl       = document.getElementById('score');
+        const hsEl          = document.getElementById('highscore');
+        const nameEntryEl   = document.getElementById('name-entry');
+        const playerNameEl  = document.getElementById('player-name');
+        const submitScoreBtn= document.getElementById('submit-score-btn');
+        const leaderboardEl = document.getElementById('leaderboard');
+
+        const API_SCORES = 'https://portfolio-wivy.onrender.com/api/scores';
+        let globalScores = [];
+        let mode     = 'easy';
+        let ctrlMode = 'swipe';
+        const dpadEl = document.getElementById('dpad');
 
         const GRID = 20;
         let CELL;
@@ -267,10 +298,19 @@
         // ── Logic step ──
         function step() {
           dir = { x: nextDir.x, y: nextDir.y };
-          const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+          const nx = snake[0].x + dir.x;
+          const ny = snake[0].y + dir.y;
 
-          if (head.x < 0 || head.x >= GRID || head.y < 0 || head.y >= GRID) return endGame();
-          if (snake.some(s => s.x === head.x && s.y === head.y))             return endGame();
+          if (mode === 'hard') {
+            if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) return endGame();
+          }
+
+          const head = {
+            x: ((nx % GRID) + GRID) % GRID,
+            y: ((ny % GRID) + GRID) % GRID,
+          };
+
+          if (snake.some(s => s.x === head.x && s.y === head.y)) return endGame();
 
           snake.unshift(head);
 
@@ -374,6 +414,8 @@
           gameState = 'playing';
           lastStep  = performance.now();
           overlay.classList.add('hidden');
+          // Visa d-pad bara om användaren valt knappar (och enheten är touch)
+          dpadEl.style.display = ctrlMode === 'buttons' ? 'grid' : 'none';
           rafId = requestAnimationFrame(loop);
         }
 
@@ -384,7 +426,47 @@
           msgEl.textContent    = score === 0 ? 'Better luck next time!' : `You scored ${score} point${score !== 1 ? 's' : ''}!`;
           scoreOvEl.textContent = highScore > 0 ? `High Score: ${highScore}` : '';
           startBtn.textContent = 'Play Again';
+
+          // Visa namnfält om score > 0 och kan ta sig in på listan
+          const qualifies = score > 0 && (globalScores.length < 10 || score > globalScores[globalScores.length - 1]?.score);
+          nameEntryEl.style.display = qualifies ? 'flex' : 'none';
+          playerNameEl.value = '';
+
+          renderLeaderboard();
           overlay.classList.remove('hidden');
+        }
+
+        // ── Leaderboard ──
+        async function fetchScores() {
+          try {
+            const res = await fetch(`${API_SCORES}?mode=${mode}`);
+            globalScores = await res.json();
+          } catch (_) { globalScores = []; }
+          renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+          if (!globalScores.length) { leaderboardEl.innerHTML = ''; return; }
+          leaderboardEl.innerHTML = globalScores.slice(0, 10).map((s, i) =>
+            `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`
+          ).join('');
+        }
+
+        async function submitScore() {
+          const name = playerNameEl.value.trim();
+          if (!name) { playerNameEl.focus(); return; }
+          submitScoreBtn.disabled = true;
+          try {
+            const res = await fetch(API_SCORES, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, score, mode }),
+            });
+            globalScores = await res.json();
+          } catch (_) {}
+          nameEntryEl.style.display = 'none';
+          renderLeaderboard();
+          submitScoreBtn.disabled = false;
         }
 
         function updateHUD() {
@@ -412,7 +494,7 @@
         }, { passive: false });
 
         canvas.addEventListener('touchend', e => {
-          if (!touchOrigin || gameState !== 'playing') return;
+          if (!touchOrigin || gameState !== 'playing' || ctrlMode !== 'swipe') return;
           const dx = e.changedTouches[0].clientX - touchOrigin.x;
           const dy = e.changedTouches[0].clientY - touchOrigin.y;
           if (Math.abs(dx) > Math.abs(dy)) {
@@ -431,11 +513,51 @@
           if (gameState !== 'playing') sizeCanvas();
         });
 
+        // ── D-pad ──
+        function dpadPress(dx, dy) {
+          if (gameState !== 'playing') return;
+          if (dx ===  1 && dir.x !== -1) nextDir = { x:  1, y: 0 };
+          if (dx === -1 && dir.x !==  1) nextDir = { x: -1, y: 0 };
+          if (dy ===  1 && dir.y !== -1) nextDir = { x: 0, y:  1 };
+          if (dy === -1 && dir.y !==  1) nextDir = { x: 0, y: -1 };
+        }
+        [
+          ['dpad-up',    0, -1],
+          ['dpad-down',  0,  1],
+          ['dpad-left', -1,  0],
+          ['dpad-right', 1,  0],
+        ].forEach(([id, dx, dy]) => {
+          const btn = document.getElementById(id);
+          btn.addEventListener('touchstart', e => { e.preventDefault(); dpadPress(dx, dy); }, { passive: false });
+          btn.addEventListener('mousedown',  e => { e.preventDefault(); dpadPress(dx, dy); });
+        });
+
+        // ── Mode-val (Easy / Hard) ──
+        document.getElementById('mode-select').addEventListener('click', e => {
+          const btn = e.target.closest('.mode-btn[data-mode]');
+          if (!btn) return;
+          mode = btn.dataset.mode;
+          document.querySelectorAll('#mode-select .mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+          fetchScores();
+        });
+
+        // ── Kontroll-val (Swipe / Knappar) – bara på touch-enheter ──
+        document.getElementById('ctrl-select').addEventListener('click', e => {
+          const btn = e.target.closest('.mode-btn[data-ctrl]');
+          if (!btn) return;
+          ctrlMode = btn.dataset.ctrl;
+          document.querySelectorAll('#ctrl-select .mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+        });
+
         // ── Init ──
         startBtn.addEventListener('click', startGame);
+        submitScoreBtn.addEventListener('click', submitScore);
+        playerNameEl.addEventListener('keydown', e => { if (e.key === 'Enter') submitScore(); });
         highScore = parseInt(localStorage.getItem('neonSnakeHS') || '0', 10);
+        dpadEl.style.display = 'none'; // dölj d-pad tills spelet startar med knappar
         sizeCanvas();
         updateHUD();
+        fetchScores();
         draw(0);
       })();
 

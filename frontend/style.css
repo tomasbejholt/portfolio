@@ -1064,6 +1064,122 @@ footer {
   letter-spacing: 0.2px;
 }
 
+/* ── Mode-select & Ctrl-select knappar ── */
+.mode-select,
+.ctrl-select {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.mode-btn {
+  padding: 5px 18px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 20px;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.mode-btn.active {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+/* Ctrl-select och d-pad döljs helt på desktop (mus-enheter) */
+@media (hover: hover) and (pointer: fine) {
+  .ctrl-select { display: none !important; }
+  .dpad        { display: none !important; }
+}
+
+/* ── D-pad ── */
+.dpad {
+  display: grid;
+  grid-template-columns: 44px 44px 44px;
+  grid-template-rows: 44px 44px;
+  gap: 4px;
+  justify-content: center;
+  margin: 10px 0 4px;
+}
+
+.dpad-btn {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, transform 0.08s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.dpad-btn:active {
+  background: rgba(139, 92, 246, 0.35);
+  transform: scale(0.92);
+}
+
+.dpad-up    { grid-column: 2; grid-row: 1; }
+.dpad-left  { grid-column: 1; grid-row: 2; }
+.dpad-down  { grid-column: 2; grid-row: 2; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+
+/* ── Leaderboard ── */
+.name-entry {
+  display: none;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.name-input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 8px;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  outline: none;
+  width: 140px;
+}
+
+.name-input::placeholder { color: rgba(255,255,255,0.35); }
+.name-input:focus { border-color: rgba(139, 92, 246, 0.8); }
+
+.leaderboard {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  width: 100%;
+  max-width: 220px;
+  text-align: left;
+  font-size: 0.78rem;
+}
+
+.leaderboard li {
+  display: flex;
+  gap: 6px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.75);
+}
+
+.lb-rank  { width: 18px; color: var(--accent); font-weight: 600; }
+.lb-name  { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-score { font-weight: 600; color: #38bdf8; }
+
 /* =========================
    FADE-IN (Intersection Observer)
    ========================= */
