@@ -141,7 +141,10 @@ About Tomas:
 - Currently studying PIA25 – Python Programming in AI at Nackademin (August 2025 – May 2027).
 - Completed courses so far: Python Programming, Database Technology, DevOps, Web Development, Frameworks in Python. Also studying Business Skills. Upcoming: Machine Learning & Deep Learning, Thesis Project, and LIA (internship).
 - Background: worked in construction, moving services, distribution, and ran his own trucking business. Discovered a passion for tech through CAD/CAM and CNC programming. Completed primary and secondary school through Komvux as an adult.
-- Projects: Neon Snake (JavaScript, Canvas API) and Gotland Explorer (Python, FastAPI, SMHI API – a REST API with live weather, places, ferry schedules, and a day-trip planner). Both are showcased on this portfolio.
+- Projects:
+  1. Neon Snake – classic Snake with a neon aesthetic, built in vanilla JavaScript and Canvas API. Features Easy/Hard modes and a live global leaderboard backed by FastAPI and Supabase.
+  2. Gotland Explorer – a REST API built with Python and FastAPI, serving live Gotland data: real-time SMHI weather, curated places, ferry schedules, and a day-trip planner. Hosted on Render.
+  3. Churn Prediction – a full ML app predicting customer churn for a telecom company. Three models trained on imbalanced data (73/27 split): Random Forest (baseline), MLP with PyTorch (best recall: 0.84), and LightGBM (best overall: AUC-ROC 0.85, F1 0.63). Served via FastAPI, with a multi-page Streamlit UI for live predictions, model comparison, SHAP feature importance, learning curves, and EDA. Key learnings: recall matters more than accuracy on imbalanced data, pos_weight helped MLP find churned customers, and all preprocessing must happen after train/test split to avoid data leakage.
 - Personal: has three children, enjoys outdoor activities.
 - Looking for an LIA internship in Stockholm. Open to any company or industry.
 - Contact: tomas_bejholt@outlook.com. LinkedIn and a contact form are also available on the portfolio site.

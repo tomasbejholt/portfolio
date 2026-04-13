@@ -150,22 +150,21 @@
       </div>
 
       <!-- ── GOTLAND EXPLORER ── -->
-      <div class="project-card fade-in delay-1">
+      <div class="project-card fade-in delay-1 gtl-card">
         <div class="project-card-header">
           <span class="project-tag">Python · FastAPI · SMHI API</span>
           <h3>Gotland Explorer</h3>
         </div>
-        <div class="project-card-body">
+        <div class="project-card-body gtl-card-body">
           <p>
-            REST API serving live Gotland data — real-time SMHI weather, curated
-            places, ferry schedules, and a day-trip planner. Hosted on Render,
-            fetched directly by this portfolio.
+            Pick a starting point, interest and how many hours you have —
+            the API builds a day-trip plan with live Gotland weather included.
           </p>
 
           <!-- Live widget -->
           <div class="gtl-widget">
             <div class="gtl-weather-strip" id="gtl-weather">
-              <span class="gtl-dim">Fetching weather…</span>
+              <span class="gtl-dim">Loading weather…</span>
             </div>
             <div class="gtl-controls">
               <select class="gtl-select" id="gtl-start">
@@ -193,63 +192,69 @@
                 Show ferries ↓
               </button>
             </div>
+          </div>
+
+          <!-- Gotland slideshow -->
+          <div class="gtl-slideshow" aria-hidden="true">
+            <div class="gtl-slides" id="gtl-slides"></div>
+            <button class="gtl-slide-btn gtl-slide-prev" id="gtl-prev">&#8249;</button>
+            <button class="gtl-slide-btn gtl-slide-next" id="gtl-next">&#8250;</button>
+            <div class="gtl-dots" id="gtl-dots"></div>
+            <!-- Ferry overlay -->
             <div class="gtl-ferry-result" id="gtl-ferry-result"></div>
           </div>
 
-          <button class="read-more-btn" data-modal="modal-gotland">About this project ↗</button>
-
-          <div class="project-links">
-            <a
-              href="https://github.com/tomasbejholt"
-              class="btn btn-ghost"
-              target="_blank"
-              rel="noopener"
-              >GitHub</a
-            >
-            <a
-              href="https://portfolio-wivy.onrender.com/docs"
-              class="btn"
-              target="_blank"
-              rel="noopener"
-              id="gtl-api-link"
-              >Live API</a
-            >
+          <!-- Pushed to bottom -->
+          <div class="gtl-card-footer">
+            <button class="read-more-btn" data-modal="modal-gotland">About this project ↗</button>
+            <div class="project-links">
+              <a href="https://github.com/tomasbejholt" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+              <a href="https://portfolio-wivy.onrender.com/docs" class="btn" target="_blank" rel="noopener" id="gtl-api-link">Live API</a>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ── ASK TOMAS ── -->
-      <div class="project-card fade-in delay-2">
-        <div class="project-card-header">
-          <span class="project-tag">Python · FastAPI · Claude API</span>
-          <h3>Ask Tomas</h3>
-        </div>
-        <div class="project-card-body">
-          <p>
-            A small AI assistant that knows about me — my background, studies,
-            and projects. Ask it anything and it will answer honestly.
+      <!-- ── CHURN PREDICTION ── -->
+      <div class="mw-card fade-in delay-2" style="grid-column: 1 / -1;">
+        <div class="mw-card-top">
+          <span class="project-tag">Python · PyTorch · LightGBM · Streamlit · FastAPI</span>
+          <h3>Churn Prediction</h3>
+          <p class="mw-desc">
+            A full ML app predicting customer churn for a telecom company.
+            Three models trained on real-world imbalanced data, served via
+            FastAPI and explored through a multi-page Streamlit UI — with pages
+            for live predictions, model comparison, SHAP feature importance,
+            learning curves, EDA, and model explanations.
           </p>
-
-          <div class="chat-widget">
-            <div class="chat-messages" id="chat-messages">
-              <div class="chat-msg chat-msg--bot">
-                Hi! I'm Tomas's portfolio assistant. Ask me anything about him.
-              </div>
+          <div class="mw-models">
+            <div class="mw-model">
+              <span class="mw-model-name">Random Forest</span>
+              <span class="mw-model-note">Baseline</span>
             </div>
-            <div class="chat-input-row">
-              <input
-                class="chat-input"
-                id="chat-input"
-                type="text"
-                placeholder="Ask something…"
-                maxlength="300"
-              />
-              <button class="btn game-btn chat-send-btn" id="chat-send-btn">
-                Send
-              </button>
+            <div class="mw-model">
+              <span class="mw-model-name">MLP (PyTorch)</span>
+              <span class="mw-model-note">Recall 0.84</span>
+            </div>
+            <div class="mw-model mw-model--winner">
+              <span class="mw-model-name">LightGBM</span>
+              <span class="mw-model-note">AUC 0.85 ✓</span>
             </div>
           </div>
-          <button class="read-more-btn" data-modal="modal-asktomas">About this project ↗</button>
+        </div>
+        <div class="mw-reflections">
+          <span class="mw-reflect-label">Reflections</span>
+          <ul class="mw-reflect-list">
+            <li>Data was 73/27 imbalanced — accuracy alone is misleading. A model that always predicts "No Churn" scores 73% but is useless.</li>
+            <li>Recall became the key metric. <code>pos_weight</code> helped the MLP focus on the minority class and reach recall 0.84 — but at the cost of more false positives (F1 0.62).</li>
+            <li>LightGBM won overall: AUC-ROC 0.85, F1 0.63. Random Forest had the worst recall (0.47) despite the highest accuracy.</li>
+            <li>Data leakage is easy to introduce. All preprocessing must happen after the train/test split — otherwise the model peeks at test data.</li>
+            <li>There is no single best metric. The right one depends on what you're actually trying to solve.</li>
+          </ul>
+        </div>
+        <div class="project-links" style="padding: 0 24px 24px;">
+          <a href="https://ml-1-app-assignment2.streamlit.app/" class="btn btn-primary" target="_blank" rel="noopener">Live App</a>
+          <a href="https://github.com/tomasbejholt" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
     </div>
@@ -952,6 +957,72 @@
         draw(0);
       })();
 
+      // ── GOTLAND SLIDESHOW ──
+      (() => {
+        const images = [
+          'img/got-explorer-bilder/magnus-jonasson-gxD_SmtubWc-unsplash.jpg',
+          'img/got-explorer-bilder/sedki-alimam-2sbexFoxKHo-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-IGIP5ygvWT4-unsplash.jpg',
+          'img/got-explorer-bilder/tommy-fogelberg-Y-b7qywQtJE-unsplash.jpg',
+          'img/got-explorer-bilder/casper-van-battum-3eOMkWeWVUc-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-olin-XcChYEuA2Po-unsplash.jpg',
+          'img/got-explorer-bilder/arvid-hoidahl-Fp5vZf6uU8A-unsplash.jpg',
+          'img/got-explorer-bilder/jon-flobrant-L7pz0YUnKdg-unsplash.jpg',
+          'img/got-explorer-bilder/nikola-johnny-mirkovic-NqIaNzWSRVA-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-tXJ0v5DjSGg-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-0s2krK5pKrA-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-WzaxdY25nRM-unsplash.jpg',
+          'img/got-explorer-bilder/oleh-holodyshyn-irOV3h6VJk0-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson--d2u00E6jvY-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-Y4bEhzUzJ2Q-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-9XkgjPRnJRE-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-UQGXGE03vWk-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-oQ7WTDUR8L8-unsplash.jpg',
+          'img/got-explorer-bilder/michael-odelberth-tpB3m1EsbQs-unsplash.jpg',
+        ];
+
+        const slidesEl = document.getElementById('gtl-slides');
+        const dotsEl   = document.getElementById('gtl-dots');
+        const prevBtn  = document.getElementById('gtl-prev');
+        const nextBtn  = document.getElementById('gtl-next');
+        let current = 0;
+        let timer;
+
+        // Build slides and dots
+        images.forEach((src, i) => {
+          const slide = document.createElement('div');
+          slide.className = 'gtl-slide' + (i === 0 ? ' active' : '');
+          slide.style.backgroundImage = `url('${src}')`;
+          slidesEl.appendChild(slide);
+
+          const dot = document.createElement('button');
+          dot.className = 'gtl-dot' + (i === 0 ? ' active' : '');
+          dot.addEventListener('click', () => goTo(i));
+          dotsEl.appendChild(dot);
+        });
+
+        function goTo(n) {
+          const slides = slidesEl.querySelectorAll('.gtl-slide');
+          const dots   = dotsEl.querySelectorAll('.gtl-dot');
+          slides[current].classList.remove('active');
+          dots[current].classList.remove('active');
+          current = (n + images.length) % images.length;
+          slides[current].classList.add('active');
+          dots[current].classList.add('active');
+          resetTimer();
+        }
+
+        function resetTimer() {
+          clearInterval(timer);
+          timer = setInterval(() => goTo(current + 1), 4000);
+        }
+
+        prevBtn.addEventListener('click', () => goTo(current - 1));
+        nextBtn.addEventListener('click', () => goTo(current + 1));
+
+        resetTimer();
+      })();
+
       // ══════════════════════════════════════
       //  GOTLAND EXPLORER WIDGET
       //  After deploy, swap to your Render URL:
@@ -994,6 +1065,7 @@
         };
 
         // Fetch weather on page load
+        weatherEl.innerHTML = '<span class="gtl-dim">Loading weather…</span>';
         fetch(`${API_BASE}/api/weather`)
           .then((r) => r.json())
           .then((data) => {
@@ -1006,7 +1078,7 @@
           })
           .catch(() => {
             weatherEl.innerHTML =
-              '<span class="gtl-dim">Weather unavailable — start the backend locally.</span>';
+              '<span class="gtl-dim">Weather unavailable.</span>';
           });
 
         // Day planner
@@ -1051,50 +1123,6 @@
         });
       })();
 
-      // ── ASK TOMAS CHAT ──
-      (() => {
-        const API_BASE = "https://portfolio-wivy.onrender.com";
-        const messagesEl = document.getElementById("chat-messages");
-        const inputEl = document.getElementById("chat-input");
-        const sendBtn = document.getElementById("chat-send-btn");
-
-        function addMsg(text, role) {
-          const div = document.createElement("div");
-          div.className = `chat-msg chat-msg--${role}`;
-          div.textContent = text;
-          messagesEl.appendChild(div);
-          messagesEl.scrollTop = messagesEl.scrollHeight;
-        }
-
-        async function send() {
-          const msg = inputEl.value.trim();
-          if (!msg) return;
-          inputEl.value = "";
-          sendBtn.disabled = true;
-          addMsg(msg, "user");
-          addMsg("…", "bot");
-
-          try {
-            const res = await fetch(`${API_BASE}/api/chat`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ message: msg }),
-            });
-            const data = await res.json();
-            messagesEl.lastChild.textContent = data.reply || "No response.";
-          } catch {
-            messagesEl.lastChild.textContent = "Could not reach the assistant.";
-          } finally {
-            sendBtn.disabled = false;
-            inputEl.focus();
-          }
-        }
-
-        sendBtn.addEventListener("click", send);
-        inputEl.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") send();
-        });
-      })();
 
       // ── FERRY SCHEDULE ──
       (() => {
@@ -1106,7 +1134,7 @@
 
         ferryBtn.addEventListener("click", async () => {
           if (open) {
-            ferryEl.style.display = "none";
+            ferryEl.classList.remove("open");
             ferryBtn.textContent = "Show ferries ↓";
             open = false;
             return;
@@ -1118,35 +1146,51 @@
             try {
               const res = await fetch(`${API_BASE}/api/ferry`);
               const data = await res.json();
-
               ferryEl.innerHTML = `
+                <button class="gtl-ferry-close" id="gtl-ferry-close">✕</button>
                 <div class="gtl-ferry-grid">
-                  ${data.routes
-                    .map(
-                      (r) => `
+                  ${data.routes.map((r) => `
                     <div class="gtl-ferry-card">
                       <div class="gtl-ferry-route">${r.from} → ${r.to}</div>
                       <div class="gtl-ferry-times">${r.departures.map((t) => `<span>${t}</span>`).join("")}</div>
                       <div class="gtl-ferry-dur">⏱ ${r.duration_hours} h</div>
-                    </div>`,
-                    )
-                    .join("")}
+                    </div>`).join("")}
                 </div>
                 <p class="gtl-dim gtl-ferry-note">${data.note}</p>`;
+              document.getElementById("gtl-ferry-close").addEventListener("click", () => {
+                ferryEl.classList.remove("open");
+                ferryBtn.textContent = "Show ferries ↓";
+                open = false;
+              });
               loaded = true;
             } catch {
-              ferryEl.innerHTML =
-                '<span class="gtl-error">Could not load ferry schedule.</span>';
+              ferryEl.innerHTML = '<span class="gtl-error">Could not load ferry schedule.</span>';
             } finally {
               ferryBtn.disabled = false;
             }
           }
 
-          ferryEl.style.display = "";
+          ferryEl.classList.add("open");
           ferryBtn.textContent = "Hide ferries ↑";
           open = true;
         });
       })();
+
+      // ── Equal card heights (Snake = Gotland, each expands independently) ──
+      function equalizeCards() {
+        const snake   = document.querySelector('.projects-grid .project-card:first-child');
+        const gotland = document.querySelector('.projects-grid .project-card.gtl-card');
+        if (!snake || !gotland) return;
+        snake.style.minHeight   = '';
+        gotland.style.minHeight = '';
+        const h = Math.max(snake.offsetHeight, gotland.offsetHeight);
+        snake.style.minHeight   = h + 'px';
+        gotland.style.minHeight = h + 'px';
+      }
+      window.addEventListener('load', () => { equalizeCards(); setTimeout(equalizeCards, 300); });
+      window.addEventListener('resize', equalizeCards);
+
     </script>
+    <script src="chat-widget.js"></script>
   </body>
 </html>
