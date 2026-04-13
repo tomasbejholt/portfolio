@@ -55,7 +55,7 @@ LOCATIONS = {
 
 SMHI_BASE = (
     "https://opendata-download-metfcst.smhi.se"
-    "/api/category/pmp3g/version/2/geotype/point"
+    "/api/category/snow1g/version/1/geotype/point"
 )
 
 # ── Hjälpfunktioner ───────────────────────────────────────────────────────────
@@ -105,27 +105,27 @@ async def fetch_smhi(lat: float, lon: float) -> dict:
 
 def parse_smhi(raw: dict) -> dict:
     """
-    Extraherar relevanta fält ur SMHI:s API-svar.
+    Extraherar relevanta fält ur SMHI:s snow1g v1 API-svar.
 
     Parametrar som används:
-      t      – temperatur (°C)
-      ws     – vindhastighet (m/s)
-      pcat   – nederbördstyp (0=ingen, 1=snö, 3=regn, 4=duggregn …)
-      Wsymb2 – väder-symbol (1=klart, 27=kraftigt snöfall)
+      air_temperature                          – temperatur (°C)
+      wind_speed                               – vindhastighet (m/s)
+      predominant_precipitation_type_at_surface – nederbördstyp
+      symbol_code                              – väder-symbol (1=klart …)
     """
     series = raw.get("timeSeries", [])
     if not series:
         return {}
 
     now = series[0]
-    params = {p["name"]: p["values"][0] for p in now["parameters"]}
+    params = now.get("data", {})
 
     return {
-        "time":            now["validTime"],
-        "temp_c":          params.get("t"),
-        "wind_ms":         params.get("ws"),
-        "precip_category": params.get("pcat"),
-        "weather_symbol":  params.get("Wsymb2"),
+        "time":            now.get("time"),
+        "temp_c":          params.get("air_temperature"),
+        "wind_ms":         params.get("wind_speed"),
+        "precip_category": params.get("predominant_precipitation_type_at_surface"),
+        "weather_symbol":  params.get("symbol_code"),
     }
 
 
