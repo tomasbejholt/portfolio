@@ -114,6 +114,9 @@
       }, { threshold: 0.08 });
       document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
     </script>
+    <script>
+      fetch('https://portfolio-wivy.onrender.com/api/scores?mode=easy').catch(() => {});
+    </script>
     <script src="chat-widget.js"></script>
   </body>
 </html>

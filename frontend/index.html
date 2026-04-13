@@ -168,6 +168,10 @@
         }, 38);
       }, 500);
     </script>
+    <script>
+      // Wake up Render backend silently so weather + scores load instantly on Projects page
+      fetch('https://portfolio-wivy.onrender.com/api/scores?mode=easy').catch(() => {});
+    </script>
     <script src="chat-widget.js"></script>
   </body>
 </html>
