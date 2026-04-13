@@ -8,10 +8,16 @@
     <link rel="icon" type="image/png" href="img/tomas-icon3.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
 
-    <meta name="description" content="Projects by Tomas Bejholt – Python, AI, and web development." />
+    <meta
+      name="description"
+      content="Projects by Tomas Bejholt – Python, AI, and web development."
+    />
   </head>
 
   <body>
@@ -30,8 +36,8 @@
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-links" id="nav-links">
-        <li><a href="index.html"    class="nav-link">Home</a></li>
-        <li><a href="about.html"    class="nav-link">About</a></li>
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
         <li><a href="projects.html" class="nav-link active">Projects</a></li>
         <li><a href="index.html#contact" class="nav-link">Contact</a></li>
       </ul>
@@ -45,7 +51,6 @@
 
     <!-- PROJECTS GRID -->
     <div class="projects-grid">
-
       <!-- ── NEON SNAKE ── -->
       <div class="project-card fade-in">
         <div class="project-card-header">
@@ -54,17 +59,19 @@
         </div>
         <div class="project-card-body">
           <p>
-            Classic Snake rebuilt with a neon aesthetic. Vanilla JS and Canvas API,
-            no libraries. Choose between Easy (wall wrap) or Hard (walls kill),
-            with a live global leaderboard per difficulty backed by a FastAPI endpoint.
-            Mobile-friendly with swipe or on-screen controls.
+            Classic Snake rebuilt with a neon aesthetic. Vanilla JS and Canvas
+            API, no libraries. Choose between Easy (wall wrap) or Hard (walls
+            kill), with a live global leaderboard per difficulty backed by a
+            FastAPI endpoint. Mobile-friendly with swipe or on-screen controls.
           </p>
 
           <div class="game-wrapper">
             <!-- HUD -->
             <div class="game-hud">
               <div>Score&nbsp;<span class="score-val" id="score">0</span></div>
-              <div>Best&nbsp;<span class="score-val" id="highscore">0</span></div>
+              <div>
+                Best&nbsp;<span class="score-val" id="highscore">0</span>
+              </div>
             </div>
 
             <!-- Canvas -->
@@ -72,9 +79,9 @@
               <canvas id="snake-canvas"></canvas>
 
               <!-- Touch-zoner direkt på canvas (mobil) -->
-              <button class="touch-zone touch-up"    id="dpad-up">▲</button>
-              <button class="touch-zone touch-left"  id="dpad-left">◀</button>
-              <button class="touch-zone touch-down"  id="dpad-down">▼</button>
+              <button class="touch-zone touch-up" id="dpad-up">▲</button>
+              <button class="touch-zone touch-left" id="dpad-left">◀</button>
+              <button class="touch-zone touch-down" id="dpad-down">▼</button>
               <button class="touch-zone touch-right" id="dpad-right">▶</button>
 
               <div class="game-overlay" id="game-overlay">
@@ -82,12 +89,18 @@
                 <div class="overlay-content" id="overlay-start">
                   <h3>NEON SNAKE</h3>
                   <div class="mode-select" id="mode-select">
-                    <button class="mode-btn active" data-mode="easy">Easy</button>
+                    <button class="mode-btn active" data-mode="easy">
+                      Easy
+                    </button>
                     <button class="mode-btn" data-mode="hard">Hard</button>
                   </div>
                   <div class="ctrl-select" id="ctrl-select">
-                    <button class="mode-btn active" data-ctrl="swipe">Swipe</button>
-                    <button class="mode-btn" data-ctrl="buttons">Knappar</button>
+                    <button class="mode-btn active" data-ctrl="swipe">
+                      Swipe
+                    </button>
+                    <button class="mode-btn" data-ctrl="buttons">
+                      Buttons
+                    </button>
                   </div>
                   <p id="overlay-msg">Arrow keys · WASD · Swipe</p>
                   <button class="btn game-btn" id="start-btn">Play</button>
@@ -95,15 +108,25 @@
                 </div>
 
                 <!-- ── Game over-vy ── -->
-                <div class="overlay-content" id="overlay-over" style="display:none">
+                <div
+                  class="overlay-content"
+                  id="overlay-over"
+                  style="display: none"
+                >
                   <h3 class="sb-title">GAME OVER</h3>
                   <p id="overlay-msg-over"></p>
                   <ol class="leaderboard" id="leaderboard"></ol>
-                  <button class="btn game-btn" id="back-to-start-btn">Klar</button>
+                  <button class="btn game-btn" id="back-to-start-btn">
+                    Done
+                  </button>
                 </div>
 
                 <!-- ── Scoreboard-vy ── -->
-                <div class="overlay-content" id="overlay-sb" style="display:none">
+                <div
+                  class="overlay-content"
+                  id="overlay-sb"
+                  style="display: none"
+                >
                   <h3 class="sb-title" id="sb-title">SCOREBOARD</h3>
                   <ol class="leaderboard" id="leaderboard-sb"></ol>
                   <button class="sb-link" id="back-sb-btn">← Back</button>
@@ -111,12 +134,17 @@
               </div>
             </div>
 
+            <div class="dpad" id="dpad">
+              <button class="dpad-btn dpad-up" id="dpad-up">▲</button>
+              <button class="dpad-btn dpad-left" id="dpad-left">◀</button>
+              <button class="dpad-btn dpad-down" id="dpad-down">▼</button>
+              <button class="dpad-btn dpad-right" id="dpad-right">▶</button>
+            </div>
             <div class="controls-hint">
               <span>↑↓←→ / WASD to steer</span>
+              <span>Mobile: swipe or use buttons</span>
             </div>
           </div>
-
-          <button class="read-more-btn" data-modal="modal-snake">About this project ↗</button>
         </div>
       </div>
 
@@ -154,20 +182,36 @@
                 <option value="6" selected>6 hrs</option>
                 <option value="8">8 hrs</option>
               </select>
-              <button class="btn game-btn gtl-plan-btn" id="gtl-plan-btn">Plan day →</button>
+              <button class="btn game-btn gtl-plan-btn" id="gtl-plan-btn">
+                Plan day →
+              </button>
             </div>
             <div class="gtl-result" id="gtl-result"></div>
             <div class="gtl-ferry-row">
-              <button class="btn btn-ghost gtl-ferry-btn" id="gtl-ferry-btn">Show ferries ↓</button>
+              <button class="btn btn-ghost gtl-ferry-btn" id="gtl-ferry-btn">
+                Show ferries ↓
+              </button>
             </div>
             <div class="gtl-ferry-result" id="gtl-ferry-result"></div>
           </div>
 
           <div class="project-links">
-            <a href="https://github.com/tomasbejholt" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://portfolio-wivy.onrender.com/docs" class="btn" target="_blank" rel="noopener" id="gtl-api-link">Live API</a>
+            <a
+              href="https://github.com/tomasbejholt"
+              class="btn btn-ghost"
+              target="_blank"
+              rel="noopener"
+              >GitHub</a
+            >
+            <a
+              href="https://portfolio-wivy.onrender.com/docs"
+              class="btn"
+              target="_blank"
+              rel="noopener"
+              id="gtl-api-link"
+              >Live API</a
+            >
           </div>
-          <button class="read-more-btn" data-modal="modal-gotland">About this project ↗</button>
         </div>
       </div>
 
@@ -202,132 +246,8 @@
               </button>
             </div>
           </div>
-          <button class="read-more-btn" data-modal="modal-asktomas">About this project ↗</button>
         </div>
       </div>
-    </div>
-
-    <!-- ══ MODALS ══ -->
-    <div class="modal-backdrop" id="modal-backdrop"></div>
-
-    <div class="modal" id="modal-snake">
-      <button class="modal-close" aria-label="Close">✕</button>
-      <h2 class="modal-title">Neon Snake</h2>
-      <p class="modal-subtitle">How it's built and what connects it</p>
-
-      <div class="arch-flow">
-        <div class="arch-node">Browser<small>Vanilla JS</small></div>
-        <span class="arch-arrow">→</span>
-        <div class="arch-node">FastAPI<small>Render</small></div>
-        <span class="arch-arrow">→</span>
-        <div class="arch-node">Supabase<small>PostgreSQL</small></div>
-      </div>
-      <div class="arch-flow" style="margin-top:0">
-        <div class="arch-node">Frontend<small>AWS S3</small></div>
-      </div>
-
-      <ul class="tech-list">
-        <li>
-          <span class="tech-name">Vanilla JavaScript · Canvas API</span>
-          <span class="tech-desc">All game logic, rendering, input handling and leaderboard UI runs entirely in the browser with no frameworks or libraries.</span>
-        </li>
-        <li>
-          <span class="tech-name">FastAPI · Python</span>
-          <span class="tech-desc">REST API that handles the global leaderboard — fetching top scores and saving new ones to the database.</span>
-        </li>
-        <li>
-          <span class="tech-name">Supabase · PostgreSQL</span>
-          <span class="tech-desc">Cloud database that stores scores per difficulty mode. Scores persist across server restarts and redeployments.</span>
-        </li>
-        <li>
-          <span class="tech-name">Render</span>
-          <span class="tech-desc">Hosts the Python backend. Auto-deploys whenever new code is pushed to GitHub.</span>
-        </li>
-        <li>
-          <span class="tech-name">AWS S3</span>
-          <span class="tech-desc">Hosts the static frontend (HTML, CSS, JS). Files are uploaded manually and served globally.</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class="modal" id="modal-gotland">
-      <button class="modal-close" aria-label="Close">✕</button>
-      <h2 class="modal-title">Gotland Explorer</h2>
-      <p class="modal-subtitle">How it's built and what connects it</p>
-
-      <div class="arch-flow">
-        <div class="arch-node">Browser<small>This portfolio</small></div>
-        <span class="arch-arrow">→</span>
-        <div class="arch-node">FastAPI<small>Render</small></div>
-        <span class="arch-arrow">→</span>
-        <div class="arch-node">SMHI API<small>Live weather</small></div>
-      </div>
-      <div class="arch-flow" style="margin-top:0">
-        <div class="arch-node">Frontend<small>AWS S3</small></div>
-      </div>
-
-      <ul class="tech-list">
-        <li>
-          <span class="tech-name">FastAPI · Python</span>
-          <span class="tech-desc">The backbone of the project. Exposes endpoints for weather, places, ferry schedules and the day-trip planner. All data is assembled and returned as clean JSON.</span>
-        </li>
-        <li>
-          <span class="tech-name">SMHI Open API</span>
-          <span class="tech-desc">Sweden's meteorological institute provides free open weather data. The API fetches real-time forecasts for Visby, Slite and Hemse using coordinate-based point queries. Results are cached server-side for one hour to avoid overloading SMHI's servers.</span>
-        </li>
-        <li>
-          <span class="tech-name">Places data · JSON</span>
-          <span class="tech-desc">A hand-curated list of Gotland attractions stored as a JSON file on the server. Each place has a category (nature, culture, food), coordinates, duration and website. The day-trip planner uses a greedy distance algorithm to pick the best stops within your time budget.</span>
-        </li>
-        <li>
-          <span class="tech-name">Ferry schedules · Static data</span>
-          <span class="tech-desc">Approximate departure times for Destination Gotland's routes between Nynäshamn, Oskarshamn and Visby. Served as static data — the API reminds users to verify exact times on destinationgotland.se.</span>
-        </li>
-        <li>
-          <span class="tech-name">Render</span>
-          <span class="tech-desc">Hosts the Python backend. Auto-deploys on every push to GitHub.</span>
-        </li>
-        <li>
-          <span class="tech-name">AWS S3</span>
-          <span class="tech-desc">Hosts the static frontend. The portfolio fetches the Gotland Explorer API directly from the browser.</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class="modal" id="modal-asktomas">
-      <button class="modal-close" aria-label="Close">✕</button>
-      <h2 class="modal-title">Ask Tomas</h2>
-      <p class="modal-subtitle">How it's built and what connects it</p>
-
-      <div class="arch-flow">
-        <div class="arch-node">Browser<small>This portfolio</small></div>
-        <span class="arch-arrow">→</span>
-        <div class="arch-node">FastAPI<small>Render</small></div>
-        <span class="arch-arrow">→</span>
-        <div class="arch-node">Claude API<small>Anthropic</small></div>
-      </div>
-      <div class="arch-flow" style="margin-top:0">
-        <div class="arch-node">Frontend<small>AWS S3</small></div>
-      </div>
-
-      <ul class="tech-list">
-        <li>
-          <span class="tech-name">Claude API · Anthropic</span>
-          <span class="tech-desc">Powers the chat assistant using Claude Haiku. A custom system prompt tells the model who Tomas is, so it can answer questions about him honestly.</span>
-        </li>
-        <li>
-          <span class="tech-name">FastAPI · Python</span>
-          <span class="tech-desc">Receives the user's message from the browser, forwards it to the Claude API with the system prompt, and returns the response.</span>
-        </li>
-        <li>
-          <span class="tech-name">Render</span>
-          <span class="tech-desc">Hosts the Python backend and stores the Anthropic API key securely as an environment variable.</span>
-        </li>
-        <li>
-          <span class="tech-name">AWS S3</span>
-          <span class="tech-desc">Hosts the static frontend. The chat widget calls the backend API directly from the browser.</span>
-        </li>
-      </ul>
     </div>
 
     <!-- FOOTER -->
@@ -338,85 +258,76 @@
     <script>
       // ── Typing animation ──
       (() => {
-        const el = document.getElementById('projects-subtitle');
-        const text = "Work I've built throughout my time at Nackademin. Part exploration, part vibecoding, all genuine.";
-        const cursor = document.createElement('span');
-        cursor.className = 'typing-cursor';
+        const el = document.getElementById("projects-subtitle");
+        const text =
+          "Work I've built throughout my time at Nackademin. Part exploration, part vibecoding, all genuine.";
+        const cursor = document.createElement("span");
+        cursor.className = "typing-cursor";
         el.appendChild(cursor);
         let i = 0;
         setTimeout(() => {
           const iv = setInterval(() => {
-            if (i < text.length) { el.insertBefore(document.createTextNode(text[i++]), cursor); }
-            else { clearInterval(iv); setTimeout(() => cursor.remove(), 2500); }
+            if (i < text.length) {
+              el.insertBefore(document.createTextNode(text[i++]), cursor);
+            } else {
+              clearInterval(iv);
+              setTimeout(() => cursor.remove(), 2500);
+            }
           }, 38);
         }, 400);
       })();
 
       // ── Hamburger ──
-      const hamburger = document.getElementById('hamburger');
-      const navLinks  = document.getElementById('nav-links');
-      hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('open');
-        navLinks.classList.toggle('open');
+      const hamburger = document.getElementById("hamburger");
+      const navLinks = document.getElementById("nav-links");
+      hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("open");
+        navLinks.classList.toggle("open");
       });
-      navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
-        hamburger.classList.remove('open');
-        navLinks.classList.remove('open');
-      }));
-
-      // ── Modals ──
-      const backdrop = document.getElementById('modal-backdrop');
-
-      function openModal(id) {
-        document.getElementById(id).classList.add('open');
-        backdrop.classList.add('open');
-      }
-
-      function closeModals() {
-        document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
-        backdrop.classList.remove('open');
-      }
-
-      document.querySelectorAll('[data-modal]').forEach(btn => {
-        btn.addEventListener('click', () => openModal(btn.dataset.modal));
-      });
-
-      document.querySelectorAll('.modal-close').forEach(btn => {
-        btn.addEventListener('click', closeModals);
-      });
-
-      backdrop.addEventListener('click', closeModals);
+      navLinks.querySelectorAll("a").forEach((l) =>
+        l.addEventListener("click", () => {
+          hamburger.classList.remove("open");
+          navLinks.classList.remove("open");
+        }),
+      );
 
       // ── Intersection Observer ──
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-      }, { threshold: 0.08 });
-      document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.08 },
+      );
+      document.querySelectorAll(".fade-in").forEach((el) => io.observe(el));
 
       // ══════════════════════════════════════
       //  NEON SNAKE GAME
       // ══════════════════════════════════════
       (() => {
-        const canvas        = document.getElementById('snake-canvas');
-        const ctx           = canvas.getContext('2d');
-        const overlay         = document.getElementById('game-overlay');
-        const startBtn        = document.getElementById('start-btn');
-        const scoreEl         = document.getElementById('score');
-        const hsEl            = document.getElementById('highscore');
-        const leaderboardEl   = document.getElementById('leaderboard');
-        const leaderboardSbEl = document.getElementById('leaderboard-sb');
-        const overlayStartEl  = document.getElementById('overlay-start');
-        const overlayOverEl   = document.getElementById('overlay-over');
-        const overlayMsgOverEl= document.getElementById('overlay-msg-over');
-        const overlaySbEl     = document.getElementById('overlay-sb');
-        const sbTitleEl       = document.getElementById('sb-title');
+        const canvas = document.getElementById("snake-canvas");
+        const ctx = canvas.getContext("2d");
+        const overlay = document.getElementById("game-overlay");
+        const startBtn = document.getElementById("start-btn");
+        const scoreEl = document.getElementById("score");
+        const hsEl = document.getElementById("highscore");
+        const leaderboardEl = document.getElementById("leaderboard");
+        const leaderboardSbEl = document.getElementById("leaderboard-sb");
+        const overlayStartEl = document.getElementById("overlay-start");
+        const overlayOverEl = document.getElementById("overlay-over");
+        const overlayMsgOverEl = document.getElementById("overlay-msg-over");
+        const overlaySbEl = document.getElementById("overlay-sb");
+        const sbTitleEl = document.getElementById("sb-title");
 
-        const API_SCORES = 'https://portfolio-wivy.onrender.com/api/scores';
+        const API_SCORES = "https://portfolio-wivy.onrender.com/api/scores";
         let globalScores = [];
-        let mode     = 'easy';
-        let ctrlMode = 'swipe';
-        const dpadBtns = ['dpad-up','dpad-down','dpad-left','dpad-right'].map(id => document.getElementById(id));
-        function showDpad(show) { dpadBtns.forEach(b => b.classList.toggle('touch-active', show)); }
+        let mode = "easy";
+        let ctrlMode = "swipe";
+        const dpadEl = document.getElementById("dpad");
 
         const GRID = 20;
         let CELL;
@@ -424,26 +335,30 @@
         let snake, dir, nextDir, food;
         let score, highScore;
         let speed;
-        let gameState = 'idle';
-        let lastStep  = 0;
+        let gameState = "idle";
+        let lastStep = 0;
         let rafId;
 
         // ── Size canvas to its container ──
         function sizeCanvas() {
           const w = canvas.parentElement.clientWidth;
           const size = Math.min(w, 440);
-          canvas.width  = size;
+          canvas.width = size;
           canvas.height = size;
           CELL = Math.floor(size / GRID);
         }
 
         // ── Reset game state ──
         function initGame() {
-          snake   = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
-          dir     = { x: 1, y: 0 };
+          snake = [
+            { x: 10, y: 10 },
+            { x: 9, y: 10 },
+            { x: 8, y: 10 },
+          ];
+          dir = { x: 1, y: 0 };
           nextDir = { x: 1, y: 0 };
-          score   = 0;
-          speed   = 145;
+          score = 0;
+          speed = 145;
           spawnFood();
           updateHUD();
         }
@@ -451,8 +366,11 @@
         function spawnFood() {
           let pos;
           do {
-            pos = { x: Math.floor(Math.random() * GRID), y: Math.floor(Math.random() * GRID) };
-          } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+            pos = {
+              x: Math.floor(Math.random() * GRID),
+              y: Math.floor(Math.random() * GRID),
+            };
+          } while (snake.some((s) => s.x === pos.x && s.y === pos.y));
           food = pos;
         }
 
@@ -462,7 +380,7 @@
           const nx = snake[0].x + dir.x;
           const ny = snake[0].y + dir.y;
 
-          if (mode === 'hard') {
+          if (mode === "hard") {
             if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) return endGame();
           }
 
@@ -471,13 +389,17 @@
             y: ((ny % GRID) + GRID) % GRID,
           };
 
-          if (snake.some(s => s.x === head.x && s.y === head.y)) return endGame();
+          if (snake.some((s) => s.x === head.x && s.y === head.y))
+            return endGame();
 
           snake.unshift(head);
 
           if (head.x === food.x && head.y === food.y) {
             score++;
-            if (score > highScore) { highScore = score; localStorage.setItem('neonSnakeHS_' + mode, highScore); }
+            if (score > highScore) {
+              highScore = score;
+              localStorage.setItem("neonSnakeHS_" + mode, highScore);
+            }
             updateHUD();
             spawnFood();
             speed = Math.max(60, 145 - score * 5);
@@ -489,29 +411,36 @@
         // ── Draw frame ──
         function draw(ts) {
           if (!snake || !food) return; // not yet initialised
-          ctx.fillStyle = '#0a0814';
+          ctx.fillStyle = "#0a0814";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
           // Subtle grid
-          ctx.strokeStyle = 'rgba(139, 92, 246, 0.07)';
+          ctx.strokeStyle = "rgba(139, 92, 246, 0.07)";
           ctx.lineWidth = 0.5;
           for (let i = 0; i <= GRID; i++) {
-            ctx.beginPath(); ctx.moveTo(i * CELL, 0); ctx.lineTo(i * CELL, canvas.height); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(0, i * CELL); ctx.lineTo(canvas.width, i * CELL); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(i * CELL, 0);
+            ctx.lineTo(i * CELL, canvas.height);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(0, i * CELL);
+            ctx.lineTo(canvas.width, i * CELL);
+            ctx.stroke();
           }
 
           // Food – pulsing orange (kontrast mot blå/teal orm)
           const pulse = (Math.sin(ts * 0.005) + 1) * 0.5;
           ctx.save();
-          ctx.shadowColor = '#f97316';
-          ctx.shadowBlur  = 8 + pulse * 18;
-          ctx.fillStyle   = `hsl(${24 + pulse * 10}, 95%, ${55 + pulse * 8}%)`;
+          ctx.shadowColor = "#f97316";
+          ctx.shadowBlur = 8 + pulse * 18;
+          ctx.fillStyle = `hsl(${24 + pulse * 10}, 95%, ${55 + pulse * 8}%)`;
           ctx.beginPath();
           ctx.arc(
             food.x * CELL + CELL / 2,
             food.y * CELL + CELL / 2,
             CELL * 0.33 + pulse * CELL * 0.06,
-            0, Math.PI * 2
+            0,
+            Math.PI * 2,
           );
           ctx.fill();
           ctx.restore();
@@ -519,18 +448,18 @@
           // Snake segments – cyan/teal
           snake.forEach((seg, i) => {
             const isHead = i === 0;
-            const t      = i / Math.max(snake.length - 1, 1);
-            const alpha  = isHead ? 1 : Math.max(0.22, 1 - t * 0.72);
-            const pad    = isHead ? 1 : 2;
+            const t = i / Math.max(snake.length - 1, 1);
+            const alpha = isHead ? 1 : Math.max(0.22, 1 - t * 0.72);
+            const pad = isHead ? 1 : 2;
 
             ctx.save();
             if (isHead) {
-              ctx.shadowColor = '#38bdf8';
-              ctx.shadowBlur  = 16;
-              ctx.fillStyle   = '#0ea5e9'; // sky blue head
+              ctx.shadowColor = "#38bdf8";
+              ctx.shadowBlur = 16;
+              ctx.fillStyle = "#0ea5e9"; // sky blue head
             } else {
-              ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
-              ctx.shadowBlur  = 5;
+              ctx.shadowColor = "rgba(56, 189, 248, 0.4)";
+              ctx.shadowBlur = 5;
               // gradient from sky blue → teal along body
               ctx.fillStyle = `hsla(${196 + t * 20}, 85%, ${50 + alpha * 15}%, ${alpha})`;
             }
@@ -558,9 +487,12 @@
 
         // ── rAF game loop ──
         function loop(ts) {
-          if (gameState !== 'playing') return;
-          if (ts - lastStep >= speed) { step(); lastStep = ts; }
-          if (gameState === 'playing') {
+          if (gameState !== "playing") return;
+          if (ts - lastStep >= speed) {
+            step();
+            lastStep = ts;
+          }
+          if (gameState === "playing") {
             draw(ts);
             rafId = requestAnimationFrame(loop);
           } else {
@@ -569,40 +501,41 @@
         }
 
         function showStartScreen() {
-          gameState = 'idle';
-          overlayOverEl.style.display  = 'none';
-          overlaySbEl.style.display    = 'none';
-          overlayStartEl.style.display = 'block';
-          overlay.classList.remove('hidden');
-          showDpad(false);
+          gameState = "idle";
+          overlayOverEl.style.display = "none";
+          overlaySbEl.style.display = "none";
+          overlayStartEl.style.display = "block";
+          overlay.classList.remove("hidden");
+          dpadEl.style.display = "none";
         }
 
         function startGame() {
           cancelAnimationFrame(rafId);
           sizeCanvas();
           initGame();
-          gameState = 'playing';
-          lastStep  = performance.now();
-          overlayStartEl.style.display = 'none';
-          overlay.classList.add('hidden');
-          showDpad(ctrlMode === 'buttons');
+          gameState = "playing";
+          lastStep = performance.now();
+          overlayStartEl.style.display = "none";
+          overlay.classList.add("hidden");
+          dpadEl.style.display = ctrlMode === "buttons" ? "grid" : "none";
           rafId = requestAnimationFrame(loop);
         }
 
         function endGame() {
-          gameState = 'over';
+          gameState = "over";
           cancelAnimationFrame(rafId);
-          showDpad(false);
+          dpadEl.style.display = "none";
 
-          overlayMsgOverEl.textContent = score === 0
-            ? 'Bättre lycka nästa gång!'
-            : `Du fick ${score} poäng!`;
+          overlayMsgOverEl.textContent =
+            score === 0
+              ? "Better luck next time!"
+              : `You scored ${score} points!`;
 
           renderLeaderboardGameOver();
 
-          overlayStartEl.style.display = 'none';
-          overlayOverEl.style.display  = 'block';
-          overlay.classList.remove('hidden');
+          overlayStartEl.style.display = "none";
+          overlayOverEl.style.display = "block";
+          overlay.classList.remove("hidden");
         }
 
         // ── Leaderboard ──
@@ -610,50 +543,65 @@
           try {
             const res = await fetch(`${API_SCORES}?mode=${mode}`);
             globalScores = await res.json();
-          } catch (_) { globalScores = []; }
+          } catch (_) {
+            globalScores = [];
+          }
         }
 
         function buildRows(scores) {
-          if (!scores.length) return '<li class="lb-empty">Inga scores än – var först!</li>';
-          return scores.slice(0, 10).map((s, i) =>
-            `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`
-          ).join('');
+          if (!scores.length)
+            return '<li class="lb-empty">Inga scores än – var först!</li>';
+          return scores
+            .slice(0, 10)
+            .map(
+              (s, i) =>
+                `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`,
+            )
+            .join("");
         }
 
         function renderLeaderboardGameOver() {
           // Sätt in spelarens score på rätt plats för att hitta position
-          const withPlayer = score > 0
-            ? [...globalScores, { name: '__player__', score }]
-                .sort((a, b) => b.score - a.score)
-                .slice(0, 10)
-            : globalScores.slice(0, 10);
+          const withPlayer =
+            score > 0
+              ? [...globalScores, { name: "__player__", score }]
+                  .sort((a, b) => b.score - a.score)
+                  .slice(0, 10)
+              : globalScores.slice(0, 10);
 
-          const playerIdx = withPlayer.findIndex(s => s.name === '__player__');
+          const playerIdx = withPlayer.findIndex(
+            (s) => s.name === "__player__",
+          );
 
           if (!withPlayer.length) {
-            leaderboardEl.innerHTML = '<li class="lb-empty">Inga scores än – var först!</li>';
+            leaderboardEl.innerHTML =
+              '<li class="lb-empty">Inga scores än – var först!</li>';
             return;
           }
 
-          leaderboardEl.innerHTML = withPlayer.map((s, i) => {
-            if (i === playerIdx) {
-              return `<li class="lb-you">
+          leaderboardEl.innerHTML = withPlayer
+            .map((s, i) => {
+              if (i === playerIdx) {
+                return `<li class="lb-you">
                 <span class="lb-rank">${i + 1}</span>
                 <input class="name-input lb-name-input" id="player-name" maxlength="20" placeholder="Ditt namn" autocomplete="off" />
                 <span class="lb-score">${s.score}</span>
               </li>`;
-            }
-            return `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`;
-          }).join('');
+              }
+              return `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`;
+            })
+            .join("");
 
-          const backBtn = document.getElementById('back-to-start-btn');
+          const backBtn = document.getElementById("back-to-start-btn");
           if (playerIdx !== -1) {
-            backBtn.textContent = 'Submit';
-            const input = document.getElementById('player-name');
+            backBtn.textContent = "Submit";
+            const input = document.getElementById("player-name");
             input.focus();
-            input.addEventListener('keydown', e => { if (e.key === 'Enter') submitScore(); });
+            input.addEventListener("keydown", (e) => {
+              if (e.key === "Enter") submitScore();
+            });
           } else {
-            backBtn.textContent = 'Back';
+            backBtn.textContent = "Back";
           }
         }
 
@@ -663,15 +611,18 @@
         }
 
         async function submitScore() {
-          const input = document.getElementById('player-name');
+          const input = document.getElementById("player-name");
           if (!input) return;
           const name = input.value.trim();
-          if (!name) { input.focus(); return; }
+          if (!name) {
+            input.focus();
+            return;
+          }
           input.disabled = true;
           try {
             const res = await fetch(API_SCORES, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ name, score, mode }),
             });
             globalScores = await res.json();
@@ -681,112 +632,170 @@
 
         function updateHUD() {
           scoreEl.textContent = score;
-          hsEl.textContent    = highScore;
+          hsEl.textContent = highScore;
         }
 
         // ── Keyboard ──
-        document.addEventListener('keydown', e => {
-          if (gameState !== 'playing') return;
-          if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+        document.addEventListener("keydown", (e) => {
+          if (gameState !== "playing") return;
+          if (
+            ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(
+              e.key,
+            )
+          )
+            e.preventDefault();
           switch (e.key) {
-            case 'ArrowUp':    case 'w': case 'W': if (dir.y !==  1) nextDir = { x: 0, y: -1 }; break;
-            case 'ArrowDown':  case 's': case 'S': if (dir.y !== -1) nextDir = { x: 0, y:  1 }; break;
-            case 'ArrowLeft':  case 'a': case 'A': if (dir.x !==  1) nextDir = { x: -1, y: 0 }; break;
-            case 'ArrowRight': case 'd': case 'D': if (dir.x !== -1) nextDir = { x:  1, y: 0 }; break;
+            case "ArrowUp":
+            case "w":
+            case "W":
+              if (dir.y !== 1) nextDir = { x: 0, y: -1 };
+              break;
+            case "ArrowDown":
+            case "s":
+            case "S":
+              if (dir.y !== -1) nextDir = { x: 0, y: 1 };
+              break;
+            case "ArrowLeft":
+            case "a":
+            case "A":
+              if (dir.x !== 1) nextDir = { x: -1, y: 0 };
+              break;
+            case "ArrowRight":
+            case "d":
+            case "D":
+              if (dir.x !== -1) nextDir = { x: 1, y: 0 };
+              break;
           }
         });
 
         // ── Touch swipe ──
         let touchOrigin = null;
-        canvas.addEventListener('touchstart', e => {
-          touchOrigin = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-          e.preventDefault();
-        }, { passive: false });
+        canvas.addEventListener(
+          "touchstart",
+          (e) => {
+            touchOrigin = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            e.preventDefault();
+          },
+          { passive: false },
+        );
 
-        canvas.addEventListener('touchend', e => {
-          if (!touchOrigin || gameState !== 'playing' || ctrlMode !== 'swipe') return;
-          const dx = e.changedTouches[0].clientX - touchOrigin.x;
-          const dy = e.changedTouches[0].clientY - touchOrigin.y;
-          if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx >  20 && dir.x !== -1) nextDir = { x:  1, y: 0 };
-            if (dx < -20 && dir.x !==  1) nextDir = { x: -1, y: 0 };
-          } else {
-            if (dy >  20 && dir.y !== -1) nextDir = { x: 0, y:  1 };
-            if (dy < -20 && dir.y !==  1) nextDir = { x: 0, y: -1 };
-          }
-          touchOrigin = null;
-          e.preventDefault();
-        }, { passive: false });
+        canvas.addEventListener(
+          "touchend",
+          (e) => {
+            if (!touchOrigin || gameState !== "playing" || ctrlMode !== "swipe")
+              return;
+            const dx = e.changedTouches[0].clientX - touchOrigin.x;
+            const dy = e.changedTouches[0].clientY - touchOrigin.y;
+            if (Math.abs(dx) > Math.abs(dy)) {
+              if (dx > 20 && dir.x !== -1) nextDir = { x: 1, y: 0 };
+              if (dx < -20 && dir.x !== 1) nextDir = { x: -1, y: 0 };
+            } else {
+              if (dy > 20 && dir.y !== -1) nextDir = { x: 0, y: 1 };
+              if (dy < -20 && dir.y !== 1) nextDir = { x: 0, y: -1 };
+            }
+            touchOrigin = null;
+            e.preventDefault();
+          },
+          { passive: false },
+        );
 
         // ── Resize ──
-        window.addEventListener('resize', () => {
-          if (gameState !== 'playing') sizeCanvas();
+        window.addEventListener("resize", () => {
+          if (gameState !== "playing") sizeCanvas();
         });
 
         // ── D-pad ──
         function dpadPress(dx, dy) {
-          if (gameState !== 'playing') return;
-          if (dx ===  1 && dir.x !== -1) nextDir = { x:  1, y: 0 };
-          if (dx === -1 && dir.x !==  1) nextDir = { x: -1, y: 0 };
-          if (dy ===  1 && dir.y !== -1) nextDir = { x: 0, y:  1 };
-          if (dy === -1 && dir.y !==  1) nextDir = { x: 0, y: -1 };
+          if (gameState !== "playing") return;
+          if (dx === 1 && dir.x !== -1) nextDir = { x: 1, y: 0 };
+          if (dx === -1 && dir.x !== 1) nextDir = { x: -1, y: 0 };
+          if (dy === 1 && dir.y !== -1) nextDir = { x: 0, y: 1 };
+          if (dy === -1 && dir.y !== 1) nextDir = { x: 0, y: -1 };
         }
         [
-          ['dpad-up',    0, -1],
-          ['dpad-down',  0,  1],
-          ['dpad-left', -1,  0],
-          ['dpad-right', 1,  0],
+          ["dpad-up", 0, -1],
+          ["dpad-down", 0, 1],
+          ["dpad-left", -1, 0],
+          ["dpad-right", 1, 0],
         ].forEach(([id, dx, dy]) => {
           const btn = document.getElementById(id);
-          btn.addEventListener('touchstart', e => { e.preventDefault(); dpadPress(dx, dy); }, { passive: false });
-          btn.addEventListener('mousedown',  e => { e.preventDefault(); dpadPress(dx, dy); });
+          btn.addEventListener(
+            "touchstart",
+            (e) => {
+              e.preventDefault();
+              dpadPress(dx, dy);
+            },
+            { passive: false },
+          );
+          btn.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            dpadPress(dx, dy);
+          });
         });
 
         // ── Mode-val (Easy / Hard) ──
-        document.getElementById('mode-select').addEventListener('click', e => {
-          const btn = e.target.closest('.mode-btn[data-mode]');
-          if (!btn) return;
-          mode = btn.dataset.mode;
-          document.querySelectorAll('#mode-select .mode-btn').forEach(b => b.classList.toggle('active', b === btn));
-          highScore = parseInt(localStorage.getItem('neonSnakeHS_' + mode) || '0', 10);
-          updateHUD();
-          fetchScores();
-        });
+        document
+          .getElementById("mode-select")
+          .addEventListener("click", (e) => {
+            const btn = e.target.closest(".mode-btn[data-mode]");
+            if (!btn) return;
+            mode = btn.dataset.mode;
+            document
+              .querySelectorAll("#mode-select .mode-btn")
+              .forEach((b) => b.classList.toggle("active", b === btn));
+            highScore = parseInt(
+              localStorage.getItem("neonSnakeHS_" + mode) || "0",
+              10,
+            );
+            updateHUD();
+            fetchScores();
+          });
 
         // ── Kontroll-val (Swipe / Knappar) – bara på touch-enheter ──
-        document.getElementById('ctrl-select').addEventListener('click', e => {
-          const btn = e.target.closest('.mode-btn[data-ctrl]');
-          if (!btn) return;
-          ctrlMode = btn.dataset.ctrl;
-          document.querySelectorAll('#ctrl-select .mode-btn').forEach(b => b.classList.toggle('active', b === btn));
-        });
+        document
+          .getElementById("ctrl-select")
+          .addEventListener("click", (e) => {
+            const btn = e.target.closest(".mode-btn[data-ctrl]");
+            if (!btn) return;
+            ctrlMode = btn.dataset.ctrl;
+            document
+              .querySelectorAll("#ctrl-select .mode-btn")
+              .forEach((b) => b.classList.toggle("active", b === btn));
+          });
 
         // ── Scoreboard-vy ──
-        document.getElementById('show-sb-btn').addEventListener('click', async () => {
-          await fetchScores();
-          overlayStartEl.style.display = 'none';
-          overlaySbEl.style.display    = 'block';
-          renderLeaderboardSb();
+        document
+          .getElementById("show-sb-btn")
+          .addEventListener("click", async () => {
+            await fetchScores();
+            overlayStartEl.style.display = "none";
+            overlaySbEl.style.display = "block";
+            renderLeaderboardSb();
+          });
+
+        document.getElementById("back-sb-btn").addEventListener("click", () => {
+          overlaySbEl.style.display = "none";
+          overlayStartEl.style.display = "block";
         });
 
-        document.getElementById('back-sb-btn').addEventListener('click', () => {
-          overlaySbEl.style.display    = 'none';
-          overlayStartEl.style.display = 'block';
-        });
-
-        document.getElementById('back-to-start-btn').addEventListener('click', async () => {
-          const input = document.getElementById('player-name');
-          if (input && input.value.trim()) {
-            await submitScore();
-          } else {
-            showStartScreen();
-          }
-        });
+        document
+          .getElementById("back-to-start-btn")
+          .addEventListener("click", async () => {
+            const input = document.getElementById("player-name");
+            if (input && input.value.trim()) {
+              await submitScore();
+            } else {
+              showStartScreen();
+            }
+          });
 
         // ── Init ──
-        startBtn.addEventListener('click', startGame);
-        highScore = parseInt(localStorage.getItem('neonSnakeHS_' + mode) || '0', 10);
-        showDpad(false);
+        startBtn.addEventListener("click", startGame);
+        highScore = parseInt(
+          localStorage.getItem("neonSnakeHS_" + mode) || "0",
+          10,
+        );
+        dpadEl.style.display = "none";
         sizeCanvas();
         updateHUD();
         fetchScores();
@@ -799,73 +808,108 @@
       //  const API_BASE = 'https://gotland-explorer-api.onrender.com';
       // ══════════════════════════════════════
       (() => {
-        const API_BASE  = 'https://portfolio-wivy.onrender.com';
-        const weatherEl = document.getElementById('gtl-weather');
-        const resultEl  = document.getElementById('gtl-result');
-        const planBtn   = document.getElementById('gtl-plan-btn');
+        const API_BASE = "https://portfolio-wivy.onrender.com";
+        const weatherEl = document.getElementById("gtl-weather");
+        const resultEl = document.getElementById("gtl-result");
+        const planBtn = document.getElementById("gtl-plan-btn");
 
         const WX = {
-          1:'☀️', 2:'🌤', 3:'⛅', 4:'🌥', 5:'☁️', 6:'☁️', 7:'🌫',
-          8:'🌧', 9:'🌦', 10:'🌧', 11:'⛈️', 12:'🌨', 13:'❄️', 14:'🌨',
-          15:'❄️', 16:'🌨', 17:'⛈️', 18:'🌦', 19:'🌧', 20:'🌧', 21:'⛈️',
-          22:'🌨', 23:'🌨', 24:'❄️', 25:'🌨', 26:'❄️', 27:'🌨'
+          1: "☀️",
+          2: "🌤",
+          3: "⛅",
+          4: "🌥",
+          5: "☁️",
+          6: "☁️",
+          7: "🌫",
+          8: "🌧",
+          9: "🌦",
+          10: "🌧",
+          11: "⛈️",
+          12: "🌨",
+          13: "❄️",
+          14: "🌨",
+          15: "❄️",
+          16: "🌨",
+          17: "⛈️",
+          18: "🌦",
+          19: "🌧",
+          20: "🌧",
+          21: "⛈️",
+          22: "🌨",
+          23: "🌨",
+          24: "❄️",
+          25: "🌨",
+          26: "❄️",
+          27: "🌨",
         };
 
         // Fetch weather on page load
         fetch(`${API_BASE}/api/weather`)
-          .then(r => r.json())
-          .then(data => {
-            weatherEl.innerHTML = Object.values(data).map(loc =>
-              `<span><strong>${loc.name}</strong> ${WX[loc.weather_symbol] || '🌡'} ${loc.temp_c}°C · ${loc.wind_ms} m/s</span>`
-            ).join('');
+          .then((r) => r.json())
+          .then((data) => {
+            weatherEl.innerHTML = Object.values(data)
+              .map(
+                (loc) =>
+                  `<span><strong>${loc.name}</strong> ${WX[loc.weather_symbol] || "🌡"} ${loc.temp_c}°C · ${loc.wind_ms} m/s</span>`,
+              )
+              .join("");
           })
           .catch(() => {
-            weatherEl.innerHTML = '<span class="gtl-dim">Weather unavailable — start the backend locally.</span>';
+            weatherEl.innerHTML =
+              '<span class="gtl-dim">Weather unavailable — start the backend locally.</span>';
           });
 
         // Day planner
-        planBtn.addEventListener('click', async () => {
-          const start    = document.getElementById('gtl-start').value;
-          const interest = document.getElementById('gtl-interest').value;
-          const hours    = document.getElementById('gtl-hours').value;
+        planBtn.addEventListener("click", async () => {
+          const start = document.getElementById("gtl-start").value;
+          const interest = document.getElementById("gtl-interest").value;
+          const hours = document.getElementById("gtl-hours").value;
 
-          planBtn.textContent = 'Planning…';
-          planBtn.disabled    = true;
-          resultEl.innerHTML  = '<span class="gtl-dim">Building your plan…</span>';
+          planBtn.textContent = "Planning…";
+          planBtn.disabled = true;
+          resultEl.innerHTML =
+            '<span class="gtl-dim">Building your plan…</span>';
 
           try {
-            const res  = await fetch(`${API_BASE}/api/dayplan?start=${start}&hours=${hours}&interest=${interest}`);
+            const res = await fetch(
+              `${API_BASE}/api/dayplan?start=${start}&hours=${hours}&interest=${interest}`,
+            );
             const plan = await res.json();
 
             if (plan.error || !plan.plan?.length) {
-              resultEl.innerHTML = `<span class="gtl-dim">${plan.error || 'No stops found — try different settings.'}</span>`;
+              resultEl.innerHTML = `<span class="gtl-dim">${plan.error || "No stops found — try different settings."}</span>`;
               return;
             }
 
-            resultEl.innerHTML = plan.plan.map(s => `
+            resultEl.innerHTML = plan.plan
+              .map(
+                (s) => `
               <div class="gtl-stop">
                 <span class="gtl-stop-name">${s.name}</span>
-                <span class="gtl-stop-meta">${s.distance_km} km · ${s.duration_hours}h · ${s.indoor ? 'indoors' : 'outdoors'}</span>
+                <span class="gtl-stop-meta">${s.distance_km} km · ${s.duration_hours}h · ${s.indoor ? "indoors" : "outdoors"}</span>
                 <span class="gtl-stop-desc">${s.description}</span>
-              </div>`).join('');
+              </div>`,
+              )
+              .join("");
           } catch {
-            resultEl.innerHTML = '<span class="gtl-error">Cannot reach API — is the backend running?</span>';
+            resultEl.innerHTML =
+              '<span class="gtl-error">Cannot reach API — is the backend running?</span>';
           } finally {
-            planBtn.textContent = 'Plan day →';
-            planBtn.disabled    = false;
+            planBtn.textContent = "Plan day →";
+            planBtn.disabled = false;
           }
         });
       })();
 
       // ── ASK TOMAS CHAT ──
       (() => {
-        const API_BASE   = 'https://portfolio-wivy.onrender.com';
-        const messagesEl = document.getElementById('chat-messages');
-        const inputEl    = document.getElementById('chat-input');
-        const sendBtn    = document.getElementById('chat-send-btn');
+        const API_BASE = "https://portfolio-wivy.onrender.com";
+        const messagesEl = document.getElementById("chat-messages");
+        const inputEl = document.getElementById("chat-input");
+        const sendBtn = document.getElementById("chat-send-btn");
 
         function addMsg(text, role) {
-          const div = document.createElement('div');
+          const div = document.createElement("div");
           div.className = `chat-msg chat-msg--${role}`;
           div.textContent = text;
           messagesEl.appendChild(div);
@@ -875,74 +919,81 @@
         async function send() {
           const msg = inputEl.value.trim();
           if (!msg) return;
-          inputEl.value    = '';
+          inputEl.value = "";
           sendBtn.disabled = true;
-          addMsg(msg, 'user');
-          addMsg('…', 'bot');
+          addMsg(msg, "user");
+          addMsg("…", "bot");
 
           try {
-            const res  = await fetch(`${API_BASE}/api/chat`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+            const res = await fetch(`${API_BASE}/api/chat`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ message: msg }),
             });
             const data = await res.json();
-            messagesEl.lastChild.textContent = data.reply || 'No response.';
+            messagesEl.lastChild.textContent = data.reply || "No response.";
           } catch {
-            messagesEl.lastChild.textContent = 'Could not reach the assistant.';
+            messagesEl.lastChild.textContent = "Could not reach the assistant.";
           } finally {
             sendBtn.disabled = false;
             inputEl.focus();
           }
         }
 
-        sendBtn.addEventListener('click', send);
-        inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+        sendBtn.addEventListener("click", send);
+        inputEl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") send();
+        });
       })();
 
       // ── FERRY SCHEDULE ──
       (() => {
-        const API_BASE  = 'https://portfolio-wivy.onrender.com';
-        const ferryBtn  = document.getElementById('gtl-ferry-btn');
-        const ferryEl   = document.getElementById('gtl-ferry-result');
+        const API_BASE = "https://portfolio-wivy.onrender.com";
+        const ferryBtn = document.getElementById("gtl-ferry-btn");
+        const ferryEl = document.getElementById("gtl-ferry-result");
         let open = false;
         let loaded = false;
 
-        ferryBtn.addEventListener('click', async () => {
+        ferryBtn.addEventListener("click", async () => {
           if (open) {
-            ferryEl.style.display = 'none';
-            ferryBtn.textContent = 'Show ferries ↓';
+            ferryEl.style.display = "none";
+            ferryBtn.textContent = "Show ferries ↓";
             open = false;
             return;
           }
 
           if (!loaded) {
-            ferryBtn.textContent = 'Loading…';
+            ferryBtn.textContent = "Loading…";
             ferryBtn.disabled = true;
             try {
-              const res  = await fetch(`${API_BASE}/api/ferry`);
+              const res = await fetch(`${API_BASE}/api/ferry`);
               const data = await res.json();
 
               ferryEl.innerHTML = `
                 <div class="gtl-ferry-grid">
-                  ${data.routes.map(r => `
+                  ${data.routes
+                    .map(
+                      (r) => `
                     <div class="gtl-ferry-card">
                       <div class="gtl-ferry-route">${r.from} → ${r.to}</div>
-                      <div class="gtl-ferry-times">${r.departures.map(t => `<span>${t}</span>`).join('')}</div>
+                      <div class="gtl-ferry-times">${r.departures.map((t) => `<span>${t}</span>`).join("")}</div>
                       <div class="gtl-ferry-dur">⏱ ${r.duration_hours} h</div>
-                    </div>`).join('')}
+                    </div>`,
+                    )
+                    .join("")}
                 </div>
                 <p class="gtl-dim gtl-ferry-note">${data.note}</p>`;
               loaded = true;
             } catch {
-              ferryEl.innerHTML = '<span class="gtl-error">Could not load ferry schedule.</span>';
+              ferryEl.innerHTML =
+                '<span class="gtl-error">Could not load ferry schedule.</span>';
             } finally {
               ferryBtn.disabled = false;
             }
           }
 
-          ferryEl.style.display = '';
-          ferryBtn.textContent = 'Hide ferries ↑';
+          ferryEl.style.display = "";
+          ferryBtn.textContent = "Hide ferries ↑";
           open = true;
         });
       })();
