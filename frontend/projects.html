@@ -72,6 +72,7 @@
               <div>
                 Best&nbsp;<span class="score-val" id="highscore">0</span>
               </div>
+              <button class="quit-btn" id="quit-btn" style="display:none">Quit</button>
             </div>
 
             <!-- Canvas -->
@@ -468,6 +469,7 @@
         const ctx = canvas.getContext("2d");
         const overlay = document.getElementById("game-overlay");
         const startBtn = document.getElementById("start-btn");
+        const quitBtn  = document.getElementById("quit-btn");
         const scoreEl = document.getElementById("score");
         const hsEl = document.getElementById("highscore");
         const leaderboardEl = document.getElementById("leaderboard");
@@ -600,44 +602,54 @@
           ctx.fill();
           ctx.restore();
 
-          // Snake segments – cyan/teal
+          // Snake body (no shadow – expensive)
+          ctx.shadowBlur = 0;
           snake.forEach((seg, i) => {
-            const isHead = i === 0;
+            if (i === 0) return; // head drawn separately
             const t = i / Math.max(snake.length - 1, 1);
-            const alpha = isHead ? 1 : Math.max(0.22, 1 - t * 0.72);
-            const pad = isHead ? 1 : 2;
-
-            ctx.save();
-            if (isHead) {
-              ctx.shadowColor = "#38bdf8";
-              ctx.shadowBlur = 16;
-              ctx.fillStyle = "#0ea5e9"; // sky blue head
-            } else {
-              ctx.shadowColor = "rgba(56, 189, 248, 0.4)";
-              ctx.shadowBlur = 5;
-              // gradient from sky blue → teal along body
-              ctx.fillStyle = `hsla(${196 + t * 20}, 85%, ${50 + alpha * 15}%, ${alpha})`;
-            }
-
-            const x = seg.x * CELL + pad;
-            const y = seg.y * CELL + pad;
-            const s = CELL - pad * 2;
-            const r = isHead ? 4 : 2;
-
+            const alpha = Math.max(0.22, 1 - t * 0.72);
+            const x = seg.x * CELL + 2;
+            const y = seg.y * CELL + 2;
+            const s = CELL - 4;
+            ctx.fillStyle = `hsla(${196 + t * 20}, 85%, ${50 + alpha * 15}%, ${alpha})`;
             ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + s - r, y);
-            ctx.quadraticCurveTo(x + s, y, x + s, y + r);
-            ctx.lineTo(x + s, y + s - r);
-            ctx.quadraticCurveTo(x + s, y + s, x + s - r, y + s);
-            ctx.lineTo(x + r, y + s);
-            ctx.quadraticCurveTo(x, y + s, x, y + s - r);
-            ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.moveTo(x + 2, y);
+            ctx.lineTo(x + s - 2, y);
+            ctx.quadraticCurveTo(x + s, y, x + s, y + 2);
+            ctx.lineTo(x + s, y + s - 2);
+            ctx.quadraticCurveTo(x + s, y + s, x + s - 2, y + s);
+            ctx.lineTo(x + 2, y + s);
+            ctx.quadraticCurveTo(x, y + s, x, y + s - 2);
+            ctx.lineTo(x, y + 2);
+            ctx.quadraticCurveTo(x, y, x + 2, y);
+            ctx.closePath();
+            ctx.fill();
+          });
+
+          // Snake head (shadow only here)
+          if (snake.length > 0) {
+            const h = snake[0];
+            const x = h.x * CELL + 1;
+            const y = h.y * CELL + 1;
+            const s = CELL - 2;
+            ctx.save();
+            ctx.shadowColor = "#38bdf8";
+            ctx.shadowBlur = 16;
+            ctx.fillStyle = "#0ea5e9";
+            ctx.beginPath();
+            ctx.moveTo(x + 4, y);
+            ctx.lineTo(x + s - 4, y);
+            ctx.quadraticCurveTo(x + s, y, x + s, y + 4);
+            ctx.lineTo(x + s, y + s - 4);
+            ctx.quadraticCurveTo(x + s, y + s, x + s - 4, y + s);
+            ctx.lineTo(x + 4, y + s);
+            ctx.quadraticCurveTo(x, y + s, x, y + s - 4);
+            ctx.lineTo(x, y + 4);
+            ctx.quadraticCurveTo(x, y, x + 4, y);
             ctx.closePath();
             ctx.fill();
             ctx.restore();
-          });
+          }
         }
 
         // ── rAF game loop ──
@@ -673,12 +685,16 @@
           overlayStartEl.style.display = "none";
           overlay.classList.add("hidden");
           dpadEl.style.display = ctrlMode === "buttons" ? "grid" : "none";
+          if (window.gtlPauseSlideshow) window.gtlPauseSlideshow();
+          quitBtn.style.display = '';
           rafId = requestAnimationFrame(loop);
         }
 
         function endGame() {
           gameState = "over";
           cancelAnimationFrame(rafId);
+          if (window.gtlResumeSlideshow) window.gtlResumeSlideshow();
+          quitBtn.style.display = 'none';
           dpadEl.style.display = "none";
 
           overlayMsgOverEl.textContent =
@@ -946,6 +962,7 @@
 
         // ── Init ──
         startBtn.addEventListener("click", startGame);
+        quitBtn.addEventListener("click", endGame);
         highScore = parseInt(
           localStorage.getItem("neonSnakeHS_" + mode) || "0",
           10,
@@ -964,21 +981,31 @@
           'img/got-explorer-bilder/sedki-alimam-2sbexFoxKHo-unsplash.jpg',
           'img/got-explorer-bilder/magnus-jonasson-IGIP5ygvWT4-unsplash.jpg',
           'img/got-explorer-bilder/tommy-fogelberg-Y-b7qywQtJE-unsplash.jpg',
-          'img/got-explorer-bilder/casper-van-battum-3eOMkWeWVUc-unsplash.jpg',
+          'img/got-explorer-bilder/casper-van-battum-ZTGGdBgeCeE-unsplash.jpg',
           'img/got-explorer-bilder/magnus-olin-XcChYEuA2Po-unsplash.jpg',
           'img/got-explorer-bilder/arvid-hoidahl-Fp5vZf6uU8A-unsplash.jpg',
           'img/got-explorer-bilder/jon-flobrant-L7pz0YUnKdg-unsplash.jpg',
-          'img/got-explorer-bilder/nikola-johnny-mirkovic-NqIaNzWSRVA-unsplash.jpg',
           'img/got-explorer-bilder/magnus-jonasson-tXJ0v5DjSGg-unsplash.jpg',
-          'img/got-explorer-bilder/magnus-jonasson-0s2krK5pKrA-unsplash.jpg',
-          'img/got-explorer-bilder/magnus-jonasson-WzaxdY25nRM-unsplash.jpg',
-          'img/got-explorer-bilder/oleh-holodyshyn-irOV3h6VJk0-unsplash.jpg',
           'img/got-explorer-bilder/magnus-jonasson--d2u00E6jvY-unsplash.jpg',
           'img/got-explorer-bilder/magnus-jonasson-Y4bEhzUzJ2Q-unsplash.jpg',
-          'img/got-explorer-bilder/magnus-jonasson-9XkgjPRnJRE-unsplash.jpg',
           'img/got-explorer-bilder/magnus-jonasson-UQGXGE03vWk-unsplash.jpg',
           'img/got-explorer-bilder/magnus-jonasson-oQ7WTDUR8L8-unsplash.jpg',
           'img/got-explorer-bilder/michael-odelberth-tpB3m1EsbQs-unsplash.jpg',
+          'img/got-explorer-bilder/oleh-holodyshyn-irOV3h6VJk0-unsplash.jpg',
+          'img/got-explorer-bilder/oleh-holodyshyn-Ye8FbFDxq4g-unsplash.jpg',
+          'img/got-explorer-bilder/oleh-holodyshyn-gt4nAsKNlyA-unsplash.jpg',
+          'img/got-explorer-bilder/adam-mechedal-Ixv6JOLsiJE-unsplash.jpg',
+          'img/got-explorer-bilder/adam-mechedal-pH9I3c4-RHg-unsplash.jpg',
+          'img/got-explorer-bilder/adam-mechedal-aD5aRhVBhCA-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-nC2btmawBVc-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-X2BvfEIGFNA-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-xU11WAaOfz0-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-sqhEph4aic8-unsplash.jpg',
+          'img/got-explorer-bilder/magnus-jonasson-X8ncvY3n72w-unsplash.jpg',
+          'img/got-explorer-bilder/tony-hanks-zVx9erWznkY-unsplash.jpg',
+          'img/got-explorer-bilder/fabian-muller-fkonYJ6TxXU-unsplash.jpg',
+          'img/got-explorer-bilder/michal-lawrenin-boDo1WFeDoo-unsplash.jpg',
+          'img/got-explorer-bilder/anton-holmgren-OhSSf_H70kA-unsplash.jpg',
         ];
 
         const slidesEl = document.getElementById('gtl-slides');
@@ -988,11 +1015,12 @@
         let current = 0;
         let timer;
 
-        // Build slides and dots
+        // Build slides and dots (no images yet – lazy loaded)
+        const slides = [];
         images.forEach((src, i) => {
           const slide = document.createElement('div');
           slide.className = 'gtl-slide' + (i === 0 ? ' active' : '');
-          slide.style.backgroundImage = `url('${src}')`;
+          slides.push(slide);
           slidesEl.appendChild(slide);
 
           const dot = document.createElement('button');
@@ -1001,21 +1029,51 @@
           dotsEl.appendChild(dot);
         });
 
+        const dots = dotsEl.querySelectorAll('.gtl-dot');
+
+        // Pre-decode all images off main thread so transitions never jank
+        const decoded = new Array(images.length).fill(false);
+        function preloadAll() {
+          images.forEach((src, i) => {
+            const img = new Image();
+            img.src = src;
+            const done = () => { decoded[i] = true; };
+            (img.decode ? img.decode().then(done).catch(done) : (img.onload = done, null));
+          });
+        }
+
+        function loadImage(i) {
+          if (!slides[i].style.backgroundImage) {
+            slides[i].style.backgroundImage = `url('${images[i]}')`;
+          }
+        }
+
         function goTo(n) {
-          const slides = slidesEl.querySelectorAll('.gtl-slide');
-          const dots   = dotsEl.querySelectorAll('.gtl-dot');
           slides[current].classList.remove('active');
           dots[current].classList.remove('active');
           current = (n + images.length) % images.length;
+          loadImage(current);
           slides[current].classList.add('active');
           dots[current].classList.add('active');
           resetTimer();
         }
 
+        // Show first image immediately, decode rest in background
+        loadImage(0);
+        preloadAll();
+
+        // Re-equalize after first image renders so Gotland card gets correct height
+        const firstImg = new Image();
+        firstImg.onload = () => { if (window.equalizeCards) window.equalizeCards(); };
+        firstImg.src = images[0];
+
         function resetTimer() {
           clearInterval(timer);
           timer = setInterval(() => goTo(current + 1), 4000);
         }
+
+        window.gtlPauseSlideshow  = () => clearInterval(timer);
+        window.gtlResumeSlideshow = () => resetTimer();
 
         prevBtn.addEventListener('click', () => goTo(current - 1));
         nextBtn.addEventListener('click', () => goTo(current + 1));
@@ -1177,7 +1235,7 @@
       })();
 
       // ── Equal card heights (Snake = Gotland, each expands independently) ──
-      function equalizeCards() {
+      window.equalizeCards = function equalizeCards() {
         const snake   = document.querySelector('.projects-grid .project-card:first-child');
         const gotland = document.querySelector('.projects-grid .project-card.gtl-card');
         if (!snake || !gotland) return;
@@ -1187,7 +1245,11 @@
         snake.style.minHeight   = h + 'px';
         gotland.style.minHeight = h + 'px';
       }
-      window.addEventListener('load', () => { equalizeCards(); setTimeout(equalizeCards, 300); });
+      window.addEventListener('load', () => {
+        equalizeCards();
+        setTimeout(equalizeCards, 300);
+        setTimeout(equalizeCards, 1000);
+      });
       window.addEventListener('resize', equalizeCards);
 
     </script>

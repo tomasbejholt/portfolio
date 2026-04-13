@@ -803,6 +803,8 @@ footer {
   background-position: center;
   opacity: 0;
   transition: opacity 0.8s ease;
+  will-change: opacity;
+  transform: translateZ(0);
 }
 
 .gtl-slide.active {
@@ -1114,7 +1116,24 @@ footer {
   color: var(--muted);
   letter-spacing: 0.8px;
   text-transform: uppercase;
+  align-items: center;
 }
+
+.quit-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid rgba(100, 116, 139, 0.35);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.quit-btn:hover { border-color: #ef4444; color: #ef4444; }
 
 .score-val {
   color: var(--accent);
