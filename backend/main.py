@@ -236,8 +236,8 @@ async def get_ferry():
     """
     return {
         "note": (
-            "Approximativa tider – se destinationgotland.se för exakta avgångstider "
-            "och säsongsvariationer."
+            "Approximate times – check destinationgotland.se for exact departures "
+            "and seasonal variations."
         ),
         "routes": [
             {
