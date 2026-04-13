@@ -145,6 +145,7 @@
               <span>Mobile: swipe or use buttons</span>
             </div>
           </div>
+          <button class="read-more-btn" data-modal="modal-snake">About this project ↗</button>
         </div>
       </div>
 
@@ -194,6 +195,8 @@
             </div>
             <div class="gtl-ferry-result" id="gtl-ferry-result"></div>
           </div>
+
+          <button class="read-more-btn" data-modal="modal-gotland">About this project ↗</button>
 
           <div class="project-links">
             <a
@@ -246,8 +249,132 @@
               </button>
             </div>
           </div>
+          <button class="read-more-btn" data-modal="modal-asktomas">About this project ↗</button>
         </div>
       </div>
+    </div>
+
+    <!-- ══ MODALS ══ -->
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+
+    <div class="modal" id="modal-snake">
+      <button class="modal-close" aria-label="Close">✕</button>
+      <h2 class="modal-title">Neon Snake</h2>
+      <p class="modal-subtitle">How it's built and what connects it</p>
+
+      <div class="arch-flow">
+        <div class="arch-node">Browser<small>Vanilla JS</small></div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">FastAPI<small>Render</small></div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">Supabase<small>PostgreSQL</small></div>
+      </div>
+      <div class="arch-flow" style="margin-top:0">
+        <div class="arch-node">Frontend<small>Vercel</small></div>
+      </div>
+
+      <ul class="tech-list">
+        <li>
+          <span class="tech-name">Vanilla JavaScript · Canvas API</span>
+          <span class="tech-desc">All game logic, rendering, input handling and leaderboard UI runs entirely in the browser with no frameworks or libraries.</span>
+        </li>
+        <li>
+          <span class="tech-name">FastAPI · Python</span>
+          <span class="tech-desc">REST API that handles the global leaderboard — fetching top scores and saving new ones to the database.</span>
+        </li>
+        <li>
+          <span class="tech-name">Supabase · PostgreSQL</span>
+          <span class="tech-desc">Cloud database that stores scores per difficulty mode. Scores persist across server restarts and redeployments.</span>
+        </li>
+        <li>
+          <span class="tech-name">Render</span>
+          <span class="tech-desc">Hosts the Python backend. Auto-deploys whenever new code is pushed to GitHub.</span>
+        </li>
+        <li>
+          <span class="tech-name">Vercel</span>
+          <span class="tech-desc">Hosts the static frontend (HTML, CSS, JS). Auto-deploys whenever new code is pushed to GitHub.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="modal" id="modal-gotland">
+      <button class="modal-close" aria-label="Close">✕</button>
+      <h2 class="modal-title">Gotland Explorer</h2>
+      <p class="modal-subtitle">How it's built and what connects it</p>
+
+      <div class="arch-flow">
+        <div class="arch-node">Browser<small>This portfolio</small></div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">FastAPI<small>Render</small></div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">SMHI API<small>Live weather</small></div>
+      </div>
+      <div class="arch-flow" style="margin-top:0">
+        <div class="arch-node">Frontend<small>Vercel</small></div>
+      </div>
+
+      <ul class="tech-list">
+        <li>
+          <span class="tech-name">FastAPI · Python</span>
+          <span class="tech-desc">The backbone of the project. Exposes endpoints for weather, places, ferry schedules and the day-trip planner. All data is assembled and returned as clean JSON.</span>
+        </li>
+        <li>
+          <span class="tech-name">SMHI Open API</span>
+          <span class="tech-desc">Sweden's meteorological institute provides free open weather data. The API fetches real-time forecasts for Visby, Slite and Hemse using coordinate-based point queries. Results are cached server-side for one hour to avoid overloading SMHI's servers.</span>
+        </li>
+        <li>
+          <span class="tech-name">Places data · JSON</span>
+          <span class="tech-desc">A hand-curated list of Gotland attractions stored as a JSON file on the server. Each place has a category (nature, culture, food), coordinates, duration and website. The day-trip planner uses a greedy distance algorithm to pick the best stops within your time budget.</span>
+        </li>
+        <li>
+          <span class="tech-name">Ferry schedules · Static data</span>
+          <span class="tech-desc">Approximate departure times for Destination Gotland's routes between Nynäshamn, Oskarshamn and Visby. Served as static data — the API reminds users to verify exact times on destinationgotland.se.</span>
+        </li>
+        <li>
+          <span class="tech-name">Render</span>
+          <span class="tech-desc">Hosts the Python backend. Auto-deploys on every push to GitHub.</span>
+        </li>
+        <li>
+          <span class="tech-name">Vercel</span>
+          <span class="tech-desc">Hosts the static frontend. The portfolio fetches the Gotland Explorer API directly from the browser.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="modal" id="modal-asktomas">
+      <button class="modal-close" aria-label="Close">✕</button>
+      <h2 class="modal-title">Ask Tomas</h2>
+      <p class="modal-subtitle">How it's built and what connects it</p>
+
+      <div class="arch-flow">
+        <div class="arch-node">Browser<small>This portfolio</small></div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">FastAPI<small>Render</small></div>
+        <span class="arch-arrow">→</span>
+        <div class="arch-node">Claude API<small>Anthropic</small></div>
+      </div>
+      <div class="arch-flow" style="margin-top:0">
+        <div class="arch-node">Frontend<small>Vercel</small></div>
+      </div>
+
+      <ul class="tech-list">
+        <li>
+          <span class="tech-name">Claude API · Anthropic</span>
+          <span class="tech-desc">Powers the chat assistant using Claude Haiku. A custom system prompt tells the model who Tomas is, so it can answer questions about him honestly.</span>
+        </li>
+        <li>
+          <span class="tech-name">FastAPI · Python</span>
+          <span class="tech-desc">Receives the user's message from the browser, forwards it to the Claude API with the system prompt, and returns the response.</span>
+        </li>
+        <li>
+          <span class="tech-name">Render</span>
+          <span class="tech-desc">Hosts the Python backend and stores the Anthropic API key securely as an environment variable.</span>
+        </li>
+        <li>
+          <span class="tech-name">Vercel</span>
+          <span class="tech-desc">Hosts the static frontend. The chat widget calls the backend API directly from the browser.</span>
+        </li>
+      </ul>
     </div>
 
     <!-- FOOTER -->
@@ -290,6 +417,29 @@
           navLinks.classList.remove("open");
         }),
       );
+
+      // ── Modals ──
+      const backdrop = document.getElementById("modal-backdrop");
+
+      function openModal(id) {
+        document.getElementById(id).classList.add("open");
+        backdrop.classList.add("open");
+      }
+
+      function closeModals() {
+        document.querySelectorAll(".modal.open").forEach((m) => m.classList.remove("open"));
+        backdrop.classList.remove("open");
+      }
+
+      document.querySelectorAll("[data-modal]").forEach((btn) => {
+        btn.addEventListener("click", () => openModal(btn.dataset.modal));
+      });
+
+      document.querySelectorAll(".modal-close").forEach((btn) => {
+        btn.addEventListener("click", closeModals);
+      });
+
+      backdrop.addEventListener("click", closeModals);
 
       // ── Intersection Observer ──
       const io = new IntersectionObserver(
