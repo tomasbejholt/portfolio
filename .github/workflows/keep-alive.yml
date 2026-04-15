@@ -12,14 +12,14 @@ jobs:
       - name: Ping Render (scores)
         run: |
           for i in {1..5}; do
-            curl -sf https://portfolio-wivy.onrender.com/api/scores?mode=easy && break
-            echo "Retry scores $i..."
+            curl -s --max-time 30 https://portfolio-wivy.onrender.com/api/scores?mode=easy && break
+            echo "Retry scores $i/5..."
             sleep 5
-          done
+          done || true
       - name: Ping Render (weather)
         run: |
           for i in {1..5}; do
-            curl -sf https://portfolio-wivy.onrender.com/api/weather && break
-            echo "Retry weather $i..."
+            curl -s --max-time 30 https://portfolio-wivy.onrender.com/api/weather && break
+            echo "Retry weather $i/5..."
             sleep 5
-          done
+          done || true
