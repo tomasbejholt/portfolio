@@ -9,7 +9,17 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Render (scores – wakes Render + queries Supabase)
-        run: curl -sf https://portfolio-wivy.onrender.com/api/scores?mode=easy
-      - name: Ping Render (weather – exercises SMHI cache)
-        run: curl -sf https://portfolio-wivy.onrender.com/api/weather
+      - name: Ping Render (scores)
+        run: |
+          for i in {1..5}; do
+            curl -sf https://portfolio-wivy.onrender.com/api/scores?mode=easy && break
+            echo "Retry scores $i..."
+            sleep 5
+          done
+      - name: Ping Render (weather)
+        run: |
+          for i in {1..5}; do
+            curl -sf https://portfolio-wivy.onrender.com/api/weather && break
+            echo "Retry weather $i..."
+            sleep 5
+          done
