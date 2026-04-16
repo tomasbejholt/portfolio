@@ -1,0 +1,1 @@
+ starta din venv och kör sen i backend--   python -m uvicorn main:app --reload
