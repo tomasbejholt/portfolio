@@ -29,7 +29,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],   # Tillåt alla origins (portfolio på S3, localhost, etc.)
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "HEAD"],
     allow_headers=["*"],
 )
 
@@ -165,6 +165,14 @@ class ScoreEntry(BaseModel):
     score: int
     mode: str = "easy"
 
+
+@app.head("/health", tags=["health"], include_in_schema=False)
+async def health_head():
+    return {}
+
+@app.get("/health", tags=["health"], include_in_schema=False)
+async def health_get():
+    return {"status": "ok"}
 
 @app.get("/", tags=["root"])
 async def root():
