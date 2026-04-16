@@ -39,9 +39,10 @@ DATA_DIR    = Path(__file__).parent / "data"
 CACHE_FILE  = DATA_DIR / "cache.json"
 PLACES_FILE = DATA_DIR / "places.json"
 
-SUPABASE_URL    = os.getenv("SUPABASE_URL")
-SUPABASE_KEY    = os.getenv("SUPABASE_KEY")
-ANALYTICS_KEY   = os.getenv("ANALYTICS_KEY", "")
+SUPABASE_URL      = os.getenv("SUPABASE_URL")
+SUPABASE_KEY      = os.getenv("SUPABASE_KEY")
+ANALYTICS_KEY     = os.getenv("ANALYTICS_KEY", "")
+DISCORD_WEBHOOK   = os.getenv("DISCORD_WEBHOOK", "")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
 CACHE_TTL = 3600  # Sekunder (1 timme) innan väderdatan hämtas på nytt
@@ -452,6 +453,25 @@ class TrackEvent(BaseModel):
     data: Optional[str] = None
 
 
+EVENT_LABELS = {
+    "pageview":      {"home": "🏠 Besökte Home", "projects": "🗂️ Besökte Projects", "about": "👤 Besökte About"},
+    "project_click": None,
+    "chat_open":     "💬 Öppnade chatten",
+    "snake_start":   "🐍 Spelade Snake",
+    "dayplan_use":   "🗺️ Planerade en dag på Gotland",
+}
+
+
+async def send_discord(message: str):
+    if not DISCORD_WEBHOOK:
+        return
+    try:
+        async with httpx.AsyncClient() as client:
+            await client.post(DISCORD_WEBHOOK, json={"content": message}, timeout=5)
+    except Exception:
+        pass
+
+
 @app.post("/api/track", tags=["analytics"], include_in_schema=False)
 async def track(ev: TrackEvent):
     """Tar emot ett spårningsevent från frontend och sparar i Supabase."""
@@ -463,6 +483,22 @@ async def track(ev: TrackEvent):
         "event":      ev.event[:32],
         "data":       ev.data[:64] if ev.data else None,
     }).execute()
+
+    # Discord-notis
+    label = EVENT_LABELS.get(ev.event)
+    if isinstance(label, dict):
+        msg = label.get(ev.page)
+    elif label:
+        msg = label
+    elif ev.event == "project_click" and ev.data:
+        msg = f"🖱️ Klickade på **{ev.data}**"
+    else:
+        msg = None
+
+    if msg:
+        vid = ev.visitor_id[:8]
+        await send_discord(f"{msg} · `{vid}`")
+
     return {"ok": True}
 
 
