@@ -13,7 +13,7 @@ import os
 
 import anthropic
 import httpx
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from supabase import create_client
@@ -42,6 +42,7 @@ PLACES_FILE = DATA_DIR / "places.json"
 SUPABASE_URL      = os.getenv("SUPABASE_URL")
 SUPABASE_KEY      = os.getenv("SUPABASE_KEY")
 ANALYTICS_KEY     = os.getenv("ANALYTICS_KEY", "")
+DASHBOARD_PIN     = os.getenv("DASHBOARD_PIN", "")
 DISCORD_WEBHOOK   = os.getenv("DISCORD_WEBHOOK", "")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
@@ -147,9 +148,12 @@ About Tomas:
   1. Neon Snake – classic Snake with a neon aesthetic, built in vanilla JavaScript and Canvas API. Features Easy/Hard modes and a live global leaderboard backed by FastAPI and Supabase.
   2. Gotland Explorer – a REST API built with Python and FastAPI, serving live Gotland data: real-time SMHI weather, curated places, ferry schedules, and a day-trip planner. Hosted on Render.
   3. Churn Prediction – a full ML app predicting customer churn for a telecom company. Three models trained on imbalanced data (73/27 split): Random Forest (baseline), MLP with PyTorch (best recall: 0.84), and LightGBM (best overall: AUC-ROC 0.85, F1 0.63). Served via FastAPI, with a multi-page Streamlit UI for live predictions, model comparison, SHAP feature importance, learning curves, and EDA. Key learnings: recall matters more than accuracy on imbalanced data, pos_weight helped MLP find churned customers, and all preprocessing must happen after train/test split to avoid data leakage.
+  4. National Crisis Dashboard – a real-time Streamlit dashboard aggregating live incident data from four official Swedish sources: Swedish Police API, SMHI API, Krisinformation.se RSS, and Trafikverket API. Features an interactive national map (Folium) with color-coded severity markers, Isolation Forest anomaly detection to flag unusual patterns, filtering by source/severity/time window/county, cloud-backed storage with duplicate prevention via Supabase, and an auto-generated situation summary per session. Stack: Python, Streamlit, Supabase, scikit-learn, Folium, pandas.
 - Personal: has three children, enjoys outdoor activities.
 - Looking for an LIA internship in Stockholm. Open to any company or industry.
 - Contact: tomas_bejholt@outlook.com. LinkedIn and a contact form are also available on the portfolio site.
+
+The last project in the list above is always the most recent one.
 
 Important guidelines:
 - Tomas is a student actively learning – never claim he is an expert or highly skilled in any area yet. Be honest about where he is in his journey.
@@ -453,6 +457,14 @@ class TrackEvent(BaseModel):
     data: Optional[str] = None
 
 
+class BlockEvent(BaseModel):
+    visitor_id: str
+
+
+class AuthRequest(BaseModel):
+    pin: str
+
+
 async def send_discord(message: str):
     if not DISCORD_WEBHOOK:
         return
@@ -463,9 +475,21 @@ async def send_discord(message: str):
         pass
 
 
+BOT_PATTERNS = [
+    "bot", "crawl", "spider", "slurp", "preview", "facebookexternalhit",
+    "linkedinbot", "twitterbot", "discordbot", "whatsapp", "telegrambot",
+    "curl", "python-httpx", "python-requests", "go-http-client", "axios",
+    "wget", "libwww", "httpclient", "java/", "okhttp",
+]
+
+
 @app.post("/api/track", tags=["analytics"], include_in_schema=False)
-async def track(ev: TrackEvent):
+async def track(ev: TrackEvent, request: Request):
     """Tar emot ett spårningsevent från frontend och sparar i Supabase."""
+    ua = request.headers.get("user-agent", "").lower()
+    if any(p in ua for p in BOT_PATTERNS):
+        return {"ok": False}
+
     if not supabase:
         return {"ok": False}
 
@@ -486,6 +510,30 @@ async def track(ev: TrackEvent):
     return {"ok": True}
 
 
+@app.post("/api/analytics/auth", tags=["analytics"], include_in_schema=False)
+async def analytics_auth(req: AuthRequest):
+    """Verifierar dashboard-PIN och returnerar access-token."""
+    if not DASHBOARD_PIN or req.pin != DASHBOARD_PIN:
+        raise HTTPException(status_code=403, detail="Fel PIN")
+    return {"token": ANALYTICS_KEY}
+
+
+@app.post("/api/analytics/block", tags=["analytics"], include_in_schema=False)
+async def block_visitor(req: BlockEvent, key: str = Query("")):
+    """Flaggar en besökare som blockerad – räknas inte längre i statistiken."""
+    if not ANALYTICS_KEY or key != ANALYTICS_KEY:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    if not supabase:
+        raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
+    supabase.table("events").insert({
+        "visitor_id": req.visitor_id[:64],
+        "page": "system",
+        "event": "blocked",
+        "data": None,
+    }).execute()
+    return {"ok": True}
+
+
 @app.get("/api/analytics", tags=["analytics"], include_in_schema=False)
 async def analytics(key: str = Query("")):
     """Returnerar aggregerad besöksstatistik. Kräver rätt nyckel."""
@@ -494,23 +542,36 @@ async def analytics(key: str = Query("")):
     if not supabase:
         raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
 
-    all_events = supabase.table("events").select("*").order("created_at", desc=True).limit(200).execute().data
+    all_events = supabase.table("events").select("*").order("created_at", desc=True).limit(1000).execute().data
 
-    unique_visitors = len({e["visitor_id"] for e in all_events})
+    blocked_ids = {e["visitor_id"] for e in all_events if e["event"] == "blocked"}
+    events = [e for e in all_events if e["visitor_id"] not in blocked_ids and e["event"] != "blocked"]
+
+    unique_visitors = len({e["visitor_id"] for e in events})
+    total_visits = sum(1 for e in events if e["event"] == "pageview")
 
     page_views = {}
-    for e in all_events:
+    for e in events:
         if e["event"] == "pageview":
             page_views[e["page"]] = page_views.get(e["page"], 0) + 1
 
     project_clicks = {}
-    for e in all_events:
+    project_event_map = {
+        "snake_start":  "Neon Snake",
+        "dayplan_use":  "Gotland Explorer",
+        "chat_open":    "Chat",
+    }
+    for e in events:
         if e["event"] == "project_click" and e["data"]:
             project_clicks[e["data"]] = project_clicks.get(e["data"], 0) + 1
+        elif e["event"] in project_event_map:
+            name = project_event_map[e["event"]]
+            project_clicks[name] = project_clicks.get(name, 0) + 1
 
-    recent = all_events[:50]
+    recent = events[:50]
 
     return {
+        "total_visits": total_visits,
         "unique_visitors": unique_visitors,
         "page_views": page_views,
         "project_clicks": project_clicks,

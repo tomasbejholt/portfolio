@@ -1,8 +1,9 @@
 (() => {
   const API = 'https://portfolio-wivy.onrender.com';
-  const ANALYTICS_KEY = 'tb_analytics_2026';
 
   const isOwner = !!localStorage.getItem('_owner');
+
+  function getToken() { return sessionStorage.getItem('_dash_token'); }
 
   // ── Spårning – körs bara för riktiga besökare ─────────────────────────────
   if (!isOwner) {
@@ -54,8 +55,20 @@
     if (clicks >= 5) {
       clicks = 0;
       clearTimeout(timer);
-      localStorage.setItem('_owner', '1'); // markera som ägare, sluta spåra
-      openDashboard();
+      if (getToken()) { openDashboard(); return; }
+      const pin = prompt('PIN:');
+      if (!pin) return;
+      fetch(`${API}/api/analytics/auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin }),
+      }).then(r => r.json()).then(res => {
+        if (res.token) {
+          sessionStorage.setItem('_dash_token', res.token);
+          localStorage.setItem('_owner', '1');
+          openDashboard();
+        }
+      }).catch(() => {});
     }
   });
 
@@ -76,7 +89,7 @@
     document.getElementById('an-close').addEventListener('click', () => overlay.remove());
     overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
 
-    fetch(`${API}/api/analytics?key=${ANALYTICS_KEY}`)
+    fetch(`${API}/api/analytics?key=${getToken()}`)
       .then(r => r.json())
       .then(renderDashboard)
       .catch(() => {
@@ -117,12 +130,13 @@
 
     const journeyRows = Object.entries(byVisitor)
       .sort((a, b) => {
-        const lastA = new Date(a[1][a[1].length - 1].created_at);
-        const lastB = new Date(b[1][b[1].length - 1].created_at);
-        return lastB - lastA;
+        const firstA = new Date(a[1][0].created_at).getTime();
+        const firstB = new Date(b[1][0].created_at).getTime();
+        return firstB - firstA;
       })
       .map(([vid, events], i) => {
         const first = new Date(events[0].created_at).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
+        const visitCount = events.filter(e => e.event === 'pageview').length;
         const steps = events.map(e => `<span class="an-step">${eventLabel(e, pageLabels)}</span>`).join('<span class="an-arrow">→</span>');
         const rowId = `journey-${i}`;
         return `
@@ -136,14 +150,20 @@
               <span class="an-journey-arrow">▶</span>
               <span class="an-vid">${vid.slice(0, 8)}</span>
               <span class="an-journey-time">${first}</span>
-              <span class="an-journey-count">${events.length} events</span>
+              <span class="an-journey-count">${visitCount} besök · ${events.length} events</span>
+              <button class="an-block-btn" data-vid="${vid}" title="Blockera besökare">🚫</button>
             </div>
             <div class="an-journey-steps" id="${rowId}" style="display:none">${steps}</div>
           </div>`;
       }).join('') || '<p class="an-empty">Inga besök ännu</p>';
 
-    document.getElementById('an-body').innerHTML = `
+    const body = document.getElementById('an-body');
+    body.innerHTML = `
       <div class="an-stat-row">
+        <div class="an-stat">
+          <span class="an-stat-num">${d.total_visits ?? 0}</span>
+          <span class="an-stat-label">Totalt besök</span>
+        </div>
         <div class="an-stat">
           <span class="an-stat-num">${d.unique_visitors}</span>
           <span class="an-stat-label">Unika besökare</span>
@@ -168,5 +188,24 @@
 
       <h3 class="an-section-title">Besökarresor</h3>
       ${journeyRows}`;
+
+    body.addEventListener('click', e => {
+      const btn = e.target.closest('.an-block-btn');
+      if (!btn) return;
+      e.stopPropagation();
+      const vid = btn.dataset.vid;
+      fetch(`${API}/api/analytics/block?key=${getToken()}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitor_id: vid }),
+      }).then(r => r.json()).then(res => {
+        if (res.ok) {
+          fetch(`${API}/api/analytics?key=${getToken()}`)
+            .then(r => r.json())
+            .then(renderDashboard)
+            .catch(() => {});
+        }
+      }).catch(() => {});
+    }, { once: true });
   }
 })();
