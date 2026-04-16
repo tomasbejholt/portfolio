@@ -1459,6 +1459,124 @@ footer {
 
 
 /* =========================
+   MW CARD (Churn Prediction)
+   ========================= */
+
+.mw-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.mw-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(3, 105, 161, 0.14), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.mw-card-top {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid rgba(124, 58, 237, 0.08);
+}
+
+.mw-card-top h3 {
+  margin: 10px 0 10px;
+  font-size: 1.15rem;
+  color: var(--heading);
+  letter-spacing: -0.2px;
+}
+
+.mw-desc {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  margin: 0 0 16px;
+}
+
+.mw-models {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mw-model {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(3, 105, 161, 0.05);
+  border: 1px solid rgba(3, 105, 161, 0.15);
+  border-radius: 8px;
+  padding: 7px 12px;
+  flex: 1;
+  min-width: 90px;
+}
+
+.mw-model--winner {
+  background: rgba(3, 105, 161, 0.10);
+  border-color: rgba(3, 105, 161, 0.35);
+}
+
+.mw-model-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.mw-model-note {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.mw-model--winner .mw-model-note {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.mw-reflections {
+  padding: 18px 24px;
+  background: rgba(3, 105, 161, 0.03);
+  border-bottom: 1px solid rgba(124, 58, 237, 0.06);
+}
+
+.mw-reflect-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.mw-reflect-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mw-reflect-list li {
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.mw-reflect-list code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.82em;
+  background: rgba(3, 105, 161, 0.08);
+  border: 1px solid rgba(3, 105, 161, 0.15);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--accent);
+}
+
+/* =========================
    MODALS
    ========================= */
 
