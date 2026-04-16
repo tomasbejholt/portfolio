@@ -453,15 +453,6 @@ class TrackEvent(BaseModel):
     data: Optional[str] = None
 
 
-EVENT_LABELS = {
-    "pageview":      {"home": "🏠 Besökte Home", "projects": "🗂️ Besökte Projects", "about": "👤 Besökte About"},
-    "project_click": None,
-    "chat_open":     "💬 Öppnade chatten",
-    "snake_start":   "🐍 Spelade Snake",
-    "dayplan_use":   "🗺️ Planerade en dag på Gotland",
-}
-
-
 async def send_discord(message: str):
     if not DISCORD_WEBHOOK:
         return
@@ -477,6 +468,11 @@ async def track(ev: TrackEvent):
     """Tar emot ett spårningsevent från frontend och sparar i Supabase."""
     if not supabase:
         return {"ok": False}
+
+    # Kolla om besökaren är ny innan vi sparar
+    is_new = ev.event == "pageview" and not supabase.table("events") \
+        .select("id").eq("visitor_id", ev.visitor_id[:64]).limit(1).execute().data
+
     supabase.table("events").insert({
         "visitor_id": ev.visitor_id[:64],
         "page":       ev.page[:32],
@@ -484,20 +480,8 @@ async def track(ev: TrackEvent):
         "data":       ev.data[:64] if ev.data else None,
     }).execute()
 
-    # Discord-notis
-    label = EVENT_LABELS.get(ev.event)
-    if isinstance(label, dict):
-        msg = label.get(ev.page)
-    elif label:
-        msg = label
-    elif ev.event == "project_click" and ev.data:
-        msg = f"🖱️ Klickade på **{ev.data}**"
-    else:
-        msg = None
-
-    if msg:
-        vid = ev.visitor_id[:8]
-        await send_discord(f"{msg} · `{vid}`")
+    if is_new:
+        await send_discord(f"🟢 Ny besökare på portfolion!")
 
     return {"ok": True}
 
