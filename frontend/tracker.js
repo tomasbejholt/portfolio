@@ -2,45 +2,42 @@
   const API = 'https://portfolio-wivy.onrender.com';
   const ANALYTICS_KEY = 'tb_analytics_2026';
 
-  // ── Ägarkoll – spåra inte dig själv ──────────────────────────────────────
-  if (localStorage.getItem('_owner')) return;
+  const isOwner = !!localStorage.getItem('_owner');
 
-  // ── Visitor ID ────────────────────────────────────────────────────────────
-  function getVisitorId() {
-    let id = localStorage.getItem('_vid');
-    if (!id) {
-      id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now();
-      localStorage.setItem('_vid', id);
+  // ── Spårning – körs bara för riktiga besökare ─────────────────────────────
+  if (!isOwner) {
+    function getVisitorId() {
+      let id = localStorage.getItem('_vid');
+      if (!id) {
+        id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now();
+        localStorage.setItem('_vid', id);
+      }
+      return id;
     }
-    return id;
-  }
 
-  const visitorId = getVisitorId();
-  const page = document.title.includes('Projects') ? 'projects'
-             : document.title.includes('About')    ? 'about'
-             : 'home';
+    const visitorId = getVisitorId();
+    const page = document.title.includes('Projects') ? 'projects'
+               : document.title.includes('About')    ? 'about'
+               : 'home';
 
-  // ── Track helper ──────────────────────────────────────────────────────────
-  function track(event, data) {
-    fetch(`${API}/api/track`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ visitor_id: visitorId, page, event, data: data || null }),
-    }).catch(() => {});
-  }
+    function track(event, data) {
+      fetch(`${API}/api/track`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitor_id: visitorId, page, event, data: data || null }),
+      }).catch(() => {});
+    }
 
-  // ── Pageview ──────────────────────────────────────────────────────────────
-  track('pageview');
+    track('pageview');
 
-  // ── Project clicks ────────────────────────────────────────────────────────
-  document.querySelectorAll('[data-project]').forEach(el => {
-    el.addEventListener('click', () => track('project_click', el.dataset.project));
-  });
+    document.querySelectorAll('[data-project]').forEach(el => {
+      el.addEventListener('click', () => track('project_click', el.dataset.project));
+    });
 
-  // ── Chat open ─────────────────────────────────────────────────────────────
-  const chatToggle = document.getElementById('chat-toggle');
-  if (chatToggle) {
-    chatToggle.addEventListener('click', () => track('chat_open'));
+    const chatToggle = document.getElementById('chat-toggle');
+    if (chatToggle) {
+      chatToggle.addEventListener('click', () => track('chat_open'));
+    }
   }
 
   // ── 5-click dashboard trigger ─────────────────────────────────────────────
