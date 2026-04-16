@@ -78,23 +78,23 @@
         80%{transform:translateX(5px)}
       }
       #pin-card {
-        background:rgba(15,15,30,.9);border:1px solid rgba(124,58,237,.4);
+        background:rgba(15,15,30,.9);border:1px solid rgba(59,130,246,.4);
         border-radius:20px;padding:2rem 1.75rem;width:280px;
-        box-shadow:0 0 40px rgba(124,58,237,.25),0 0 80px rgba(124,58,237,.1);
+        box-shadow:0 0 40px rgba(59,130,246,.25),0 0 80px rgba(59,130,246,.1);
         display:flex;flex-direction:column;align-items:center;gap:1.5rem;
       }
       #pin-card.shake { animation:pinShake .35s ease; }
       #pin-label {
-        color:#a78bfa;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+        color:#93c5fd;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
       }
       #pin-dots { display:flex;gap:.75rem; }
       .pin-dot {
-        width:12px;height:12px;border-radius:50%;border:2px solid #4c1d95;
+        width:12px;height:12px;border-radius:50%;border:2px solid #1e3a5f;
         transition:all .15s ease;
       }
       .pin-dot.filled {
-        background:#7c3aed;border-color:#7c3aed;
-        box-shadow:0 0 8px rgba(124,58,237,.8);
+        background:#3b82f6;border-color:#3b82f6;
+        box-shadow:0 0 8px rgba(59,130,246,.8);
       }
       .pin-dot.error { background:#f87171;border-color:#f87171;box-shadow:0 0 8px rgba(248,113,113,.8); }
       #pin-pad { display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;width:100%; }
@@ -103,9 +103,9 @@
         border-radius:12px;color:#e0e0e0;font-size:1.25rem;font-weight:500;
         padding:.75rem;cursor:pointer;transition:all .1s ease;user-select:none;
       }
-      .pin-btn:hover { background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.4); }
-      .pin-btn:active { transform:scale(.93);background:rgba(124,58,237,.35); }
-      .pin-btn.del { font-size:1rem;color:#a78bfa; }
+      .pin-btn:hover { background:rgba(59,130,246,.2);border-color:rgba(59,130,246,.4); }
+      .pin-btn:active { transform:scale(.93);background:rgba(59,130,246,.35); }
+      .pin-btn.del { font-size:1rem;color:#93c5fd; }
       .pin-btn.empty { visibility:hidden; }
     `;
     document.head.appendChild(style);
@@ -130,6 +130,23 @@
     let entered = '';
     const dots = overlay.querySelectorAll('.pin-dot');
 
+    function onKey(e) {
+      if (e.key >= '0' && e.key <= '9') {
+        if (entered.length >= 6) return;
+        entered += e.key;
+        updateDots();
+        if (entered.length === 6) tryLogin();
+      } else if (e.key === 'Backspace') {
+        entered = entered.slice(0, -1);
+        updateDots();
+      } else if (e.key === 'Escape') {
+        overlay.remove();
+        style.remove();
+        document.removeEventListener('keydown', onKey);
+      }
+    }
+    document.addEventListener('keydown', onKey);
+
     function updateDots(error) {
       dots.forEach((d, i) => {
         d.classList.remove('filled', 'error');
@@ -146,6 +163,7 @@
         if (res.token) {
           sessionStorage.setItem('_dash_token', res.token);
           localStorage.setItem('_owner', '1');
+          document.removeEventListener('keydown', onKey);
           overlay.remove();
           style.remove();
           openDashboard();
@@ -176,7 +194,7 @@
       if (entered.length === 6) tryLogin();
     });
 
-    overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.remove(); style.remove(); } });
+    overlay.addEventListener('click', e => { if (e.target === overlay) { document.removeEventListener('keydown', onKey); overlay.remove(); style.remove(); } });
   }
 
   // ── Dashboard ─────────────────────────────────────────────────────────────
