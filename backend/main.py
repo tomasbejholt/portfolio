@@ -39,8 +39,9 @@ DATA_DIR    = Path(__file__).parent / "data"
 CACHE_FILE  = DATA_DIR / "cache.json"
 PLACES_FILE = DATA_DIR / "places.json"
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL    = os.getenv("SUPABASE_URL")
+SUPABASE_KEY    = os.getenv("SUPABASE_KEY")
+ANALYTICS_KEY   = os.getenv("ANALYTICS_KEY", "")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
 
 CACHE_TTL = 3600  # Sekunder (1 timme) innan väderdatan hämtas på nytt
@@ -440,3 +441,58 @@ async def post_score(entry: ScoreEntry):
         .execute()
     )
     return res.data
+
+
+# ── Analytics ─────────────────────────────────────────────────────────────────
+
+class TrackEvent(BaseModel):
+    visitor_id: str
+    page: str
+    event: str
+    data: Optional[str] = None
+
+
+@app.post("/api/track", tags=["analytics"], include_in_schema=False)
+async def track(ev: TrackEvent):
+    """Tar emot ett spårningsevent från frontend och sparar i Supabase."""
+    if not supabase:
+        return {"ok": False}
+    supabase.table("events").insert({
+        "visitor_id": ev.visitor_id[:64],
+        "page":       ev.page[:32],
+        "event":      ev.event[:32],
+        "data":       ev.data[:64] if ev.data else None,
+    }).execute()
+    return {"ok": True}
+
+
+@app.get("/api/analytics", tags=["analytics"], include_in_schema=False)
+async def analytics(key: str = Query("")):
+    """Returnerar aggregerad besöksstatistik. Kräver rätt nyckel."""
+    if not ANALYTICS_KEY or key != ANALYTICS_KEY:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    if not supabase:
+        raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
+
+    all_events = supabase.table("events").select("*").order("created_at", desc=True).execute().data
+
+    unique_visitors = len({e["visitor_id"] for e in all_events})
+
+    page_views = {}
+    for e in all_events:
+        if e["event"] == "pageview":
+            page_views[e["page"]] = page_views.get(e["page"], 0) + 1
+
+    project_clicks = {}
+    for e in all_events:
+        if e["event"] == "project_click" and e["data"]:
+            project_clicks[e["data"]] = project_clicks.get(e["data"], 0) + 1
+
+    recent = all_events[:50]
+
+    return {
+        "unique_visitors": unique_visitors,
+        "page_views": page_views,
+        "project_clicks": project_clicks,
+        "recent": recent,
+    }
