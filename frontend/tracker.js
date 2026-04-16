@@ -56,7 +56,33 @@
       clicks = 0;
       clearTimeout(timer);
       if (getToken()) { openDashboard(); return; }
-      const pin = prompt('PIN:');
+      showPinModal();
+    }
+  });
+
+  // ── PIN-modal ─────────────────────────────────────────────────────────────
+  function showPinModal() {
+    const overlay = document.createElement('div');
+    overlay.id = 'pin-overlay';
+    overlay.innerHTML = `
+      <div class="an-panel" style="max-width:320px;gap:1rem;">
+        <h2 class="an-title">Dashboard</h2>
+        <input id="pin-input" type="password" placeholder="PIN" autocomplete="off"
+          style="width:100%;padding:.6rem .8rem;background:#1a1a2e;border:1px solid #333;border-radius:6px;color:#e0e0e0;font-size:1rem;outline:none;">
+        <button id="pin-submit"
+          style="width:100%;padding:.6rem;background:#7c3aed;border:none;border-radius:6px;color:#fff;font-size:.95rem;cursor:pointer;">
+          Logga in
+        </button>
+        <p id="pin-error" style="color:#f87171;font-size:.85rem;text-align:center;display:none;">Fel PIN</p>
+      </div>`;
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
+    document.body.appendChild(overlay);
+
+    const input = document.getElementById('pin-input');
+    input.focus();
+
+    function tryLogin() {
+      const pin = input.value;
       if (!pin) return;
       fetch(`${API}/api/analytics/auth`, {
         method: 'POST',
@@ -66,11 +92,20 @@
         if (res.token) {
           sessionStorage.setItem('_dash_token', res.token);
           localStorage.setItem('_owner', '1');
+          overlay.remove();
           openDashboard();
+        } else {
+          document.getElementById('pin-error').style.display = 'block';
+          input.value = '';
+          input.focus();
         }
       }).catch(() => {});
     }
-  });
+
+    document.getElementById('pin-submit').addEventListener('click', tryLogin);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+  }
 
   // ── Dashboard ─────────────────────────────────────────────────────────────
   function openDashboard() {
