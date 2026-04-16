@@ -1299,12 +1299,11 @@
         snake.style.minHeight   = h + 'px';
         gotland.style.minHeight = h + 'px';
       }
-      window.addEventListener('load', () => {
-        equalizeCards();
-        setTimeout(equalizeCards, 300);
-        setTimeout(equalizeCards, 1000);
-      });
+      window.addEventListener('load', equalizeCards);
       window.addEventListener('resize', equalizeCards);
+      const _ro = new ResizeObserver(equalizeCards);
+      document.querySelectorAll('.projects-grid .project-card:first-child, .projects-grid .project-card.gtl-card')
+        .forEach(el => _ro.observe(el));
 
     </script>
     <script src="chat-widget.js"></script>
