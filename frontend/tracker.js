@@ -62,49 +62,121 @@
 
   // ── PIN-modal ─────────────────────────────────────────────────────────────
   function showPinModal() {
+    const style = document.createElement('style');
+    style.textContent = `
+      #pin-overlay {
+        position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+        display:flex;align-items:center;justify-content:center;z-index:9999;
+        animation:pinFadeIn .2s ease;
+      }
+      @keyframes pinFadeIn { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+      @keyframes pinShake {
+        0%,100%{transform:translateX(0)}
+        20%{transform:translateX(-8px)}
+        40%{transform:translateX(8px)}
+        60%{transform:translateX(-5px)}
+        80%{transform:translateX(5px)}
+      }
+      #pin-card {
+        background:rgba(15,15,30,.9);border:1px solid rgba(124,58,237,.4);
+        border-radius:20px;padding:2rem 1.75rem;width:280px;
+        box-shadow:0 0 40px rgba(124,58,237,.25),0 0 80px rgba(124,58,237,.1);
+        display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+      }
+      #pin-card.shake { animation:pinShake .35s ease; }
+      #pin-label {
+        color:#a78bfa;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+      }
+      #pin-dots { display:flex;gap:.75rem; }
+      .pin-dot {
+        width:12px;height:12px;border-radius:50%;border:2px solid #4c1d95;
+        transition:all .15s ease;
+      }
+      .pin-dot.filled {
+        background:#7c3aed;border-color:#7c3aed;
+        box-shadow:0 0 8px rgba(124,58,237,.8);
+      }
+      .pin-dot.error { background:#f87171;border-color:#f87171;box-shadow:0 0 8px rgba(248,113,113,.8); }
+      #pin-pad { display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;width:100%; }
+      .pin-btn {
+        background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+        border-radius:12px;color:#e0e0e0;font-size:1.25rem;font-weight:500;
+        padding:.75rem;cursor:pointer;transition:all .1s ease;user-select:none;
+      }
+      .pin-btn:hover { background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.4); }
+      .pin-btn:active { transform:scale(.93);background:rgba(124,58,237,.35); }
+      .pin-btn.del { font-size:1rem;color:#a78bfa; }
+      .pin-btn.empty { visibility:hidden; }
+    `;
+    document.head.appendChild(style);
+
     const overlay = document.createElement('div');
     overlay.id = 'pin-overlay';
     overlay.innerHTML = `
-      <div class="an-panel" style="max-width:320px;gap:1rem;">
-        <h2 class="an-title">Dashboard</h2>
-        <input id="pin-input" type="password" placeholder="PIN" autocomplete="off"
-          style="width:100%;padding:.6rem .8rem;background:#1a1a2e;border:1px solid #333;border-radius:6px;color:#e0e0e0;font-size:1rem;outline:none;">
-        <button id="pin-submit"
-          style="width:100%;padding:.6rem;background:#7c3aed;border:none;border-radius:6px;color:#fff;font-size:.95rem;cursor:pointer;">
-          Logga in
-        </button>
-        <p id="pin-error" style="color:#f87171;font-size:.85rem;text-align:center;display:none;">Fel PIN</p>
+      <div id="pin-card">
+        <span id="pin-label">Access</span>
+        <div id="pin-dots">
+          ${Array(6).fill('<div class="pin-dot"></div>').join('')}
+        </div>
+        <div id="pin-pad">
+          ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="pin-btn" data-n="${n}">${n}</button>`).join('')}
+          <button class="pin-btn empty" aria-hidden="true"></button>
+          <button class="pin-btn" data-n="0">0</button>
+          <button class="pin-btn del" id="pin-del">⌫</button>
+        </div>
       </div>`;
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
     document.body.appendChild(overlay);
 
-    const input = document.getElementById('pin-input');
-    input.focus();
+    let entered = '';
+    const dots = overlay.querySelectorAll('.pin-dot');
+
+    function updateDots(error) {
+      dots.forEach((d, i) => {
+        d.classList.remove('filled', 'error');
+        if (i < entered.length) d.classList.add(error ? 'error' : 'filled');
+      });
+    }
 
     function tryLogin() {
-      const pin = input.value;
-      if (!pin) return;
       fetch(`${API}/api/analytics/auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pin }),
+        body: JSON.stringify({ pin: entered }),
       }).then(r => r.json()).then(res => {
         if (res.token) {
           sessionStorage.setItem('_dash_token', res.token);
           localStorage.setItem('_owner', '1');
           overlay.remove();
+          style.remove();
           openDashboard();
         } else {
-          document.getElementById('pin-error').style.display = 'block';
-          input.value = '';
-          input.focus();
+          updateDots(true);
+          const card = document.getElementById('pin-card');
+          card.classList.add('shake');
+          card.addEventListener('animationend', () => {
+            card.classList.remove('shake');
+            entered = '';
+            updateDots();
+          }, { once: true });
         }
       }).catch(() => {});
     }
 
-    document.getElementById('pin-submit').addEventListener('click', tryLogin);
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
-    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+    overlay.addEventListener('click', e => {
+      const btn = e.target.closest('.pin-btn');
+      if (!btn || btn.classList.contains('empty')) return;
+      if (btn.id === 'pin-del') {
+        entered = entered.slice(0, -1);
+        updateDots();
+        return;
+      }
+      if (entered.length >= 6) return;
+      entered += btn.dataset.n;
+      updateDots();
+      if (entered.length === 6) tryLogin();
+    });
+
+    overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.remove(); style.remove(); } });
   }
 
   // ── Dashboard ─────────────────────────────────────────────────────────────
