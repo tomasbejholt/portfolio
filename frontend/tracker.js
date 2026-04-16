@@ -2,6 +2,9 @@
   const API = 'https://portfolio-wivy.onrender.com';
   const ANALYTICS_KEY = 'tb_analytics_2026';
 
+  // ── Ägarkoll – spåra inte dig själv ──────────────────────────────────────
+  if (localStorage.getItem('_owner')) return;
+
   // ── Visitor ID ────────────────────────────────────────────────────────────
   function getVisitorId() {
     let id = localStorage.getItem('_vid');
@@ -54,6 +57,7 @@
     if (clicks >= 5) {
       clicks = 0;
       clearTimeout(timer);
+      localStorage.setItem('_owner', '1'); // markera som ägare, sluta spåra
       openDashboard();
     }
   });
@@ -83,9 +87,18 @@
       });
   }
 
+  function eventLabel(e, pageLabels) {
+    if (e.event === 'pageview')      return `📄 ${pageLabels[e.page] || e.page}`;
+    if (e.event === 'project_click') return `🖱️ ${e.data}`;
+    if (e.event === 'chat_open')     return '💬 Öppnade chatten';
+    return e.event;
+  }
+
   function renderDashboard(d) {
     const pageLabels = { home: 'Home', projects: 'Projects', about: 'About' };
+    const allEvents  = d.recent || [];
 
+    // ── Statistik ──
     const pageViewRows = Object.entries(d.page_views || {})
       .sort((a, b) => b[1] - a[1])
       .map(([p, n]) => `<tr><td>${pageLabels[p] || p}</td><td class="an-num">${n}</td></tr>`)
@@ -96,14 +109,31 @@
       .map(([proj, n]) => `<tr><td>${proj}</td><td class="an-num">${n}</td></tr>`)
       .join('') || '<tr><td colspan="2">Inga klick ännu</td></tr>';
 
-    const recentRows = (d.recent || []).slice(0, 20).map(e => {
-      const ts = new Date(e.created_at).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
-      const label = e.event === 'pageview' ? `📄 ${pageLabels[e.page] || e.page}`
-                  : e.event === 'project_click' ? `🖱️ ${e.data}`
-                  : e.event === 'chat_open' ? '💬 Chat'
-                  : e.event;
-      return `<tr><td>${ts}</td><td>${label}</td><td class="an-vid">${e.visitor_id.slice(0, 8)}</td></tr>`;
-    }).join('') || '<tr><td colspan="3">Inga events</td></tr>';
+    // ── Besökarresor – gruppera per visitor_id ──
+    const byVisitor = {};
+    [...allEvents].reverse().forEach(e => {
+      if (!byVisitor[e.visitor_id]) byVisitor[e.visitor_id] = [];
+      byVisitor[e.visitor_id].push(e);
+    });
+
+    const journeyRows = Object.entries(byVisitor)
+      .sort((a, b) => {
+        const lastA = new Date(a[1][a[1].length - 1].created_at);
+        const lastB = new Date(b[1][b[1].length - 1].created_at);
+        return lastB - lastA;
+      })
+      .map(([vid, events]) => {
+        const first = new Date(events[0].created_at).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
+        const steps = events.map(e => `<span class="an-step">${eventLabel(e, pageLabels)}</span>`).join('<span class="an-arrow">→</span>');
+        return `
+          <div class="an-journey">
+            <div class="an-journey-meta">
+              <span class="an-vid">${vid.slice(0, 8)}</span>
+              <span class="an-journey-time">${first}</span>
+            </div>
+            <div class="an-journey-steps">${steps}</div>
+          </div>`;
+      }).join('') || '<p class="an-empty">Inga besök ännu</p>';
 
     document.getElementById('an-body').innerHTML = `
       <div class="an-stat-row">
@@ -125,12 +155,11 @@
       <table class="an-table"><thead><tr><th>Sida</th><th>Visningar</th></tr></thead>
       <tbody>${pageViewRows}</tbody></table>
 
-      <h3 class="an-section-title">Projekt</h3>
+      <h3 class="an-section-title">Mest klickade projekt</h3>
       <table class="an-table"><thead><tr><th>Projekt</th><th>Klick</th></tr></thead>
       <tbody>${projectRows}</tbody></table>
 
-      <h3 class="an-section-title">Senaste events</h3>
-      <table class="an-table"><thead><tr><th>Tid</th><th>Event</th><th>Besökare</th></tr></thead>
-      <tbody>${recentRows}</tbody></table>`;
+      <h3 class="an-section-title">Besökarresor</h3>
+      ${journeyRows}`;
   }
 })();

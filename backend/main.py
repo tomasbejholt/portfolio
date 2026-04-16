@@ -474,7 +474,7 @@ async def analytics(key: str = Query("")):
     if not supabase:
         raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
 
-    all_events = supabase.table("events").select("*").order("created_at", desc=True).execute().data
+    all_events = supabase.table("events").select("*").order("created_at", desc=True).limit(200).execute().data
 
     unique_visitors = len({e["visitor_id"] for e in all_events})
 
