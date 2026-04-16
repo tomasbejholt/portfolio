@@ -2268,12 +2268,10 @@ footer {
 }
 
 .an-panel {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: #1a2236;
+  border: 1px solid rgba(99, 179, 237, 0.25);
   border-radius: var(--radius);
-  box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5);
   padding: 32px;
   width: 100%;
   max-width: 680px;
@@ -2300,7 +2298,7 @@ footer {
 .an-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--heading);
+  color: #fff;
   margin: 0 0 24px;
 }
 
@@ -2318,8 +2316,8 @@ footer {
 
 .an-stat {
   flex: 1;
-  background: rgba(3, 105, 161, 0.07);
-  border: 1px solid rgba(3, 105, 161, 0.15);
+  background: rgba(99, 179, 237, 0.12);
+  border: 1px solid rgba(99, 179, 237, 0.25);
   border-radius: 10px;
   padding: 16px;
   text-align: center;
@@ -2346,7 +2344,7 @@ footer {
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: rgba(255,255,255,0.5);
   margin: 20px 0 8px;
 }
 
@@ -2359,16 +2357,16 @@ footer {
 .an-table th {
   text-align: left;
   padding: 6px 10px;
-  color: var(--muted);
+  color: rgba(255,255,255,0.5);
   font-weight: 600;
   font-size: 0.75rem;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .an-table td {
   padding: 7px 10px;
-  color: var(--text);
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .an-num {
