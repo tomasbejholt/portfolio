@@ -119,7 +119,7 @@
           ${Array(6).fill('<div class="pin-dot"></div>').join('')}
         </div>
         <div id="pin-pad">
-          ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="pin-btn" data-n="${n}">${n}</button>`).join('')}
+          ${[7,8,9,4,5,6,1,2,3].map(n => `<button class="pin-btn" data-n="${n}">${n}</button>`).join('')}
           <button class="pin-btn empty" aria-hidden="true"></button>
           <button class="pin-btn" data-n="0">0</button>
           <button class="pin-btn del" id="pin-del">⌫</button>
