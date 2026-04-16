@@ -30,14 +30,14 @@
 
     track('pageview');
 
-    document.querySelectorAll('[data-project]').forEach(el => {
-      el.addEventListener('click', () => track('project_click', el.dataset.project));
+    document.addEventListener('click', e => {
+      const t = e.target.closest('[data-project], #cw-bubble, #start-btn, #gtl-plan-btn');
+      if (!t) return;
+      if (t.dataset.project)          track('project_click', t.dataset.project);
+      else if (t.id === 'cw-bubble')  track('chat_open');
+      else if (t.id === 'start-btn')  track('snake_start');
+      else if (t.id === 'gtl-plan-btn') track('dayplan_use');
     });
-
-    const chatToggle = document.getElementById('chat-toggle');
-    if (chatToggle) {
-      chatToggle.addEventListener('click', () => track('chat_open'));
-    }
   }
 
   // ── 5-click dashboard trigger ─────────────────────────────────────────────
@@ -88,6 +88,8 @@
     if (e.event === 'pageview')      return `📄 ${pageLabels[e.page] || e.page}`;
     if (e.event === 'project_click') return `🖱️ ${e.data}`;
     if (e.event === 'chat_open')     return '💬 Öppnade chatten';
+    if (e.event === 'snake_start')   return '🐍 Spelade Snake';
+    if (e.event === 'dayplan_use')   return '🗺️ Planerade dag';
     return e.event;
   }
 
