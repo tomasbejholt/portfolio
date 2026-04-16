@@ -2387,18 +2387,36 @@ footer {
   border-radius: 8px;
   padding: 12px 14px;
   margin-bottom: 8px;
+  cursor: pointer;
+  user-select: none;
 }
+.an-journey:hover { background: #f1f5f9; }
 
 .an-journey-meta {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 8px;
+}
+
+.an-journey-arrow {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  width: 12px;
 }
 
 .an-journey-time {
   font-size: 0.75rem;
   color: #94a3b8;
+}
+
+.an-journey-count {
+  font-size: 0.72rem;
+  color: #cbd5e1;
+  margin-left: auto;
+}
+
+.an-journey-steps {
+  margin-top: 10px;
 }
 
 .an-journey-steps {

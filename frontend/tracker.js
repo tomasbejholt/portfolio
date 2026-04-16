@@ -119,16 +119,24 @@
         const lastB = new Date(b[1][b[1].length - 1].created_at);
         return lastB - lastA;
       })
-      .map(([vid, events]) => {
+      .map(([vid, events], i) => {
         const first = new Date(events[0].created_at).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' });
         const steps = events.map(e => `<span class="an-step">${eventLabel(e, pageLabels)}</span>`).join('<span class="an-arrow">→</span>');
+        const rowId = `journey-${i}`;
         return `
-          <div class="an-journey">
+          <div class="an-journey" onclick="
+            const d = document.getElementById('${rowId}');
+            const a = this.querySelector('.an-journey-arrow');
+            d.style.display = d.style.display === 'none' ? 'flex' : 'none';
+            a.textContent = d.style.display === 'none' ? '▶' : '▼';
+          ">
             <div class="an-journey-meta">
+              <span class="an-journey-arrow">▶</span>
               <span class="an-vid">${vid.slice(0, 8)}</span>
               <span class="an-journey-time">${first}</span>
+              <span class="an-journey-count">${events.length} events</span>
             </div>
-            <div class="an-journey-steps">${steps}</div>
+            <div class="an-journey-steps" id="${rowId}" style="display:none">${steps}</div>
           </div>`;
       }).join('') || '<p class="an-empty">Inga besök ännu</p>';
 
