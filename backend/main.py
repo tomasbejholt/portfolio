@@ -305,14 +305,6 @@ async def get_dayplan(
     start_loc = LOCATIONS[start]
     places = load_places()
 
-    def with_distance(lst):
-        for p in lst:
-            p = dict(p)  # kopiera för att inte mutera original
-            p["_dist_km"] = haversine(
-                start_loc["lat"], start_loc["lon"], p["lat"], p["lon"]
-            )
-        return lst
-
     # Primär: filtrera på kategori och sortera på avstånd
     primary = sorted(
         [dict(p) for p in places if p["category"] == category],

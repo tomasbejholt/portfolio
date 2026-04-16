@@ -440,10 +440,6 @@ a:hover   { color: var(--accent-light); }
 .github-btn:hover,
 .github-btn:hover:visited    { background: #0d1117; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); color: #fff; }
 
-.discord-btn                 { background: #5865f2; color: #fff; }
-.discord-btn:visited         { color: #fff; }
-.discord-btn:hover,
-.discord-btn:hover:visited   { background: #404eed; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(88, 101, 242, 0.4); color: #fff; }
 
 /* Back / plain */
 .btn:not(.btn-primary):not(.btn-ghost):not(.linkedin-btn):not(.github-btn):not(.discord-btn):not(.game-btn) {
@@ -720,15 +716,6 @@ footer {
   box-shadow: 0 20px 50px rgba(3, 105, 161, 0.16), 0 4px 12px rgba(0,0,0,0.06);
 }
 
-.project-card--dim {
-  opacity: 0.5;
-  border-style: dashed;
-  border-color: rgba(3, 105, 161, 0.2);
-}
-.project-card--dim:hover {
-  transform: none;
-  box-shadow: var(--glass-shadow);
-}
 
 .project-card-header {
   padding: 22px 24px 14px;
@@ -1383,15 +1370,6 @@ footer {
 .touch-right { top: 20%;  right: 0;  width: 33%; height: 60%; }
 
 /* ── Leaderboard ── */
-.name-entry {
-  display: none;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
 .name-input {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(139, 92, 246, 0.4);
@@ -1479,160 +1457,6 @@ footer {
   align-items: center;
 }
 
-/* =========================
-   MORE WORK SECTION
-   ========================= */
-
-.more-work-section {
-  max-width: 1060px;
-  margin: 0 auto;
-  padding: 0 24px 80px;
-}
-
-.more-work-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.more-work-header::before,
-.more-work-header::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--glass-border);
-}
-
-.more-work-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-.more-work-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 24px;
-  align-items: start;
-}
-
-.mw-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.mw-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 50px rgba(3, 105, 161, 0.14), 0 4px 12px rgba(0,0,0,0.06);
-}
-
-.mw-card-top {
-  padding: 22px 24px 18px;
-  border-bottom: 1px solid rgba(124, 58, 237, 0.08);
-}
-
-.mw-card-top h3 {
-  margin: 10px 0 10px;
-  font-size: 1.15rem;
-  color: var(--heading);
-  letter-spacing: -0.2px;
-}
-
-.mw-desc {
-  color: var(--muted);
-  font-size: 0.88rem;
-  line-height: 1.7;
-  margin: 0 0 16px;
-}
-
-.mw-models {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.mw-model {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  background: rgba(3, 105, 161, 0.05);
-  border: 1px solid rgba(3, 105, 161, 0.15);
-  border-radius: 8px;
-  padding: 7px 12px;
-  flex: 1;
-  min-width: 90px;
-}
-
-.mw-model--winner {
-  background: rgba(3, 105, 161, 0.10);
-  border-color: rgba(3, 105, 161, 0.35);
-}
-
-.mw-model-name {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--heading);
-}
-
-.mw-model-note {
-  font-size: 0.72rem;
-  color: var(--muted);
-}
-
-.mw-model--winner .mw-model-note {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.mw-reflections {
-  padding: 18px 24px;
-  background: rgba(3, 105, 161, 0.03);
-  border-bottom: 1px solid rgba(124, 58, 237, 0.06);
-}
-
-.mw-reflect-label {
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 12px;
-}
-
-.mw-reflect-list {
-  margin: 0;
-  padding-left: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.mw-reflect-list li {
-  font-size: 0.84rem;
-  color: var(--muted);
-  line-height: 1.65;
-}
-
-.mw-reflect-list code {
-  font-family: 'Courier New', monospace;
-  font-size: 0.82em;
-  background: rgba(3, 105, 161, 0.08);
-  border: 1px solid rgba(3, 105, 161, 0.15);
-  border-radius: 4px;
-  padding: 1px 5px;
-  color: var(--accent);
-}
 
 /* =========================
    MODALS
@@ -1847,8 +1671,7 @@ footer {
     padding: 0 16px 60px;
   }
 
-  .more-work-section { padding: 0 16px 60px; }
-  .more-work-grid { grid-template-columns: 1fr; }
+
 }
 
 @media (max-width: 540px) {

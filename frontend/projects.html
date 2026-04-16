@@ -209,7 +209,7 @@
           <div class="gtl-card-footer">
             <button class="read-more-btn" data-modal="modal-gotland">About this project ↗</button>
             <div class="project-links">
-              <a href="https://portfolio-wivy.onrender.com/docs" class="btn" target="_blank" rel="noopener" id="gtl-api-link">Live API</a>
+              <a href="https://portfolio-wivy.onrender.com/docs" class="btn" target="_blank" rel="noopener">Live API</a>
               <a href="https://github.com/tomasbejholt" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
             </div>
           </div>
@@ -396,41 +396,6 @@
       </ul>
     </div>
 
-    <div class="modal" id="modal-asktomas">
-      <button class="modal-close" aria-label="Close">✕</button>
-      <h2 class="modal-title">Ask Tomas</h2>
-      <p class="modal-subtitle">How it's built and what connects it</p>
-
-      <div class="arch-flow">
-        <div class="arch-node">Browser<small>This portfolio</small></div>
-        <span class="arch-arrow">→</span>
-        <div class="arch-node">FastAPI<small>Render</small></div>
-        <span class="arch-arrow">→</span>
-        <div class="arch-node">Claude API<small>Anthropic</small></div>
-      </div>
-      <div class="arch-flow" style="margin-top:0">
-        <div class="arch-node">Frontend<small>Vercel</small></div>
-      </div>
-
-      <ul class="tech-list">
-        <li>
-          <span class="tech-name">Claude API · Anthropic</span>
-          <span class="tech-desc">Powers the chat assistant using Claude Haiku. A custom system prompt tells the model who Tomas is, so it can answer questions about him honestly.</span>
-        </li>
-        <li>
-          <span class="tech-name">FastAPI · Python</span>
-          <span class="tech-desc">Receives the user's message from the browser, forwards it to the Claude API with the system prompt, and returns the response.</span>
-        </li>
-        <li>
-          <span class="tech-name">Render</span>
-          <span class="tech-desc">Hosts the Python backend and stores the Anthropic API key securely as an environment variable.</span>
-        </li>
-        <li>
-          <span class="tech-name">Vercel</span>
-          <span class="tech-desc">Hosts the static frontend. The chat widget calls the backend API directly from the browser.</span>
-        </li>
-      </ul>
-    </div>
 
     <!-- ── UNDER DEVELOPMENT ── -->
     <div class="wip-section fade-in">
