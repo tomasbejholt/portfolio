@@ -8,6 +8,7 @@ import math
 import time
 from pathlib import Path
 from typing import Optional
+from collections import defaultdict
 
 import os
 
@@ -480,32 +481,74 @@ BOT_PATTERNS = [
     "linkedinbot", "twitterbot", "discordbot", "whatsapp", "telegrambot",
     "curl", "python-httpx", "python-requests", "go-http-client", "axios",
     "wget", "libwww", "httpclient", "java/", "okhttp",
+    "headlesschrome", "phantomjs", "selenium", "puppeteer", "playwright",
+    "scrapy", "aiohttp", "httpx", "node-fetch", "got/", "undici",
+    "googlebot", "bingbot", "yandex", "baidu", "duckduckbot", "semrush",
+    "ahrefsbot", "mj12bot", "dotbot", "rogerbot",
 ]
+
+# In-memory deduplication to prevent double Discord notifications
+# visitor_id → last_notified_ts  (cleared after 10 min)
+_notified_visitors: dict[str, float] = {}
+# ip → last_notified_ts  (cleared after 2 min)
+_notified_ips: dict[str, float] = {}
+_VISITOR_TTL = 600   # 10 minutes
+_IP_TTL      = 120   # 2 minutes
+
+def _clean_notified():
+    now = time.time()
+    for d, ttl in ((_notified_visitors, _VISITOR_TTL), (_notified_ips, _IP_TTL)):
+        stale = [k for k, t in d.items() if now - t > ttl]
+        for k in stale:
+            del d[k]
+
+def _is_bot_ua(ua: str) -> bool:
+    if not ua:
+        return True
+    return any(p in ua for p in BOT_PATTERNS)
 
 
 @app.post("/api/track", tags=["analytics"], include_in_schema=False)
 async def track(ev: TrackEvent, request: Request):
     """Tar emot ett spårningsevent från frontend och sparar i Supabase."""
     ua = request.headers.get("user-agent", "").lower()
-    if any(p in ua for p in BOT_PATTERNS):
+    if _is_bot_ua(ua):
+        return {"ok": False}
+
+    # Require Accept header — real browsers always send it, most bots skip it
+    if not request.headers.get("accept"):
         return {"ok": False}
 
     if not supabase:
         return {"ok": False}
 
-    # Kolla om besökaren är ny innan vi sparar
-    is_new = ev.event == "pageview" and not supabase.table("events") \
-        .select("id").eq("visitor_id", ev.visitor_id[:64]).limit(1).execute().data
+    _clean_notified()
+
+    vid = ev.visitor_id[:64]
+    ip  = request.headers.get("x-forwarded-for", request.client.host if request.client else "").split(",")[0].strip()
+
+    # Only send Discord for first pageview of a new visitor
+    if ev.event == "pageview":
+        now = time.time()
+        already_notified_visitor = vid in _notified_visitors
+        already_notified_ip      = ip and ip in _notified_ips
+
+        if not already_notified_visitor and not already_notified_ip:
+            # Check DB as authoritative source
+            is_new = not supabase.table("events") \
+                .select("id").eq("visitor_id", vid).limit(1).execute().data
+            if is_new:
+                _notified_visitors[vid] = now
+                if ip:
+                    _notified_ips[ip] = now
+                await send_discord("🟢 Ny besökare på portfolion!")
 
     supabase.table("events").insert({
-        "visitor_id": ev.visitor_id[:64],
+        "visitor_id": vid,
         "page":       ev.page[:32],
         "event":      ev.event[:32],
         "data":       ev.data[:64] if ev.data else None,
     }).execute()
-
-    if is_new:
-        await send_discord(f"🟢 Ny besökare på portfolion!")
 
     return {"ok": True}
 
