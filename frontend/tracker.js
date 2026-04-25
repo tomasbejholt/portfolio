@@ -21,19 +21,32 @@
                : document.title.includes('About')    ? 'about'
                : 'home';
 
-    function track(event, data) {
+    function track(event, data, trackPage) {
       fetch(`${API}/api/track`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ visitor_id: visitorId, page, event, data: data || null }),
+        body: JSON.stringify({ visitor_id: visitorId, page: trackPage || page, event, data: data || null }),
       }).catch(() => {});
     }
 
-    track('pageview');
+    function flushPendingHome() {
+      if (sessionStorage.getItem('_pending_home')) {
+        sessionStorage.removeItem('_pending_home');
+        track('pageview', null, 'home');
+      }
+    }
+
+    if (page === 'home') {
+      sessionStorage.setItem('_pending_home', '1');
+    } else {
+      flushPendingHome();
+      track('pageview');
+    }
 
     document.addEventListener('click', e => {
       const t = e.target.closest('[data-project], #cw-bubble, #start-btn, #gtl-plan-btn');
       if (!t) return;
+      flushPendingHome();
       if (t.dataset.project)          track('project_click', t.dataset.project);
       else if (t.id === 'cw-bubble')  track('chat_open');
       else if (t.id === 'start-btn')  track('snake_start');

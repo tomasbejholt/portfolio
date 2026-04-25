@@ -527,8 +527,8 @@ async def track(ev: TrackEvent, request: Request):
     vid = ev.visitor_id[:64]
     ip  = request.headers.get("x-forwarded-for", request.client.host if request.client else "").split(",")[0].strip()
 
-    # Only send Discord for first pageview of a new visitor
-    if ev.event == "pageview":
+    # Only send Discord when visitor goes beyond home
+    if ev.event == "pageview" and ev.page != "home":
         now = time.time()
         already_notified_visitor = vid in _notified_visitors
         already_notified_ip      = ip and ip in _notified_ips
