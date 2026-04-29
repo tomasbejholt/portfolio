@@ -2240,6 +2240,248 @@ footer {
 }
 
 /* =========================
+   PAPILLON CARD
+   ========================= */
+
+.pap-card {
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(124,58,237,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 90% 100%, rgba(168,85,247,0.12) 0%, transparent 50%),
+    linear-gradient(rgba(124,58,237,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.03) 1px, transparent 1px),
+    #0b0714;
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  border: 1px solid rgba(124,58,237,0.22);
+  border-top: 2px solid #7c3aed;
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 40px rgba(124,58,237,0.10), 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.pap-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(124,58,237,0.18), 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.pap-card-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.pap-left {
+  padding: 28px 28px 24px;
+  border-right: 1px solid rgba(124,58,237,0.12);
+}
+
+.pap-right {
+  padding: 28px 28px 24px;
+}
+
+.pap-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #a78bfa;
+  font-family: monospace;
+  margin-bottom: 10px;
+}
+
+.pap-tag {
+  background: rgba(124,58,237,0.08) !important;
+  color: rgba(167,139,250,0.85) !important;
+  border: 1px solid rgba(124,58,237,0.20) !important;
+}
+
+.pap-title {
+  margin: 10px 0 12px;
+  font-size: 1.15rem;
+  color: #e6edf3;
+  letter-spacing: -0.2px;
+}
+
+.pap-desc {
+  font-size: 0.87rem;
+  line-height: 1.75;
+  color: #8b949e;
+  margin: 0 0 12px;
+}
+
+.pap-species {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.pap-species-label {
+  font-size: 0.60rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(124,58,237,0.65);
+  font-family: monospace;
+  margin-bottom: 4px;
+}
+
+.pap-species-items {
+  font-size: 0.74rem;
+  color: rgba(167,139,250,0.55);
+  font-family: monospace;
+  line-height: 1.7;
+}
+
+.pap-section-label {
+  font-size: 0.60rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(124,58,237,0.65);
+  font-family: monospace;
+  margin-bottom: 12px;
+}
+
+.pap-models {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pap-model {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pap-model--winner {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(124,58,237,0.07);
+  border: 1px solid rgba(124,58,237,0.20);
+  margin: 0 -10px;
+}
+
+.pap-model-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.pap-model-name {
+  font-size: 0.80rem;
+  font-weight: 600;
+  color: #e6edf3;
+}
+
+.pap-model-acc {
+  font-size: 0.80rem;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.pap-bar-track {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pap-bar {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.pap-model-meta {
+  font-size: 0.68rem;
+  color: rgba(139,148,158,0.65);
+  font-family: monospace;
+}
+
+.pap-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pap-pill {
+  font-size: 0.7rem;
+  font-family: monospace;
+  padding: 3px 9px;
+  border-radius: 3px;
+  background: rgba(124,58,237,0.07);
+  border: 1px solid rgba(124,58,237,0.18);
+  color: rgba(167,139,250,0.80);
+  letter-spacing: 0.04em;
+}
+
+.pap-card-footer {
+  padding: 14px 28px 24px;
+  border-top: 1px solid rgba(124,58,237,0.10);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pap-live-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  font-size: 0.78rem;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a78bfa;
+  border: 1px solid rgba(124,58,237,0.55);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.pap-live-btn:hover {
+  background: rgba(124,58,237,0.12);
+  box-shadow: 0 0 18px rgba(124,58,237,0.28);
+  border-color: #7c3aed;
+  color: #a78bfa;
+}
+
+.pap-live-btn:visited { color: #a78bfa; }
+
+.pap-ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  font-size: 0.78rem;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8b949e;
+  border: 1px solid rgba(139,148,158,0.3);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.pap-ghost-btn:hover {
+  background: rgba(139,148,158,0.08);
+  border-color: rgba(139,148,158,0.55);
+  color: #e6edf3;
+}
+
+@media (max-width: 768px) {
+  .pap-card-inner {
+    grid-template-columns: 1fr;
+  }
+  .pap-left {
+    border-right: none;
+    border-bottom: 1px solid rgba(124,58,237,0.12);
+    padding-bottom: 20px;
+  }
+}
+
+/* =========================
    ANALYTICS TRIGGER & DASHBOARD
    ========================= */
 

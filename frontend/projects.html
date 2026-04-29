@@ -307,6 +307,87 @@
           <a href="https://github.com/tomasbejholt" class="kris-ghost-btn" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
+      <!-- ── PAPILLON ── -->
+      <div class="pap-card fade-in" style="grid-column: 1 / -1;">
+        <div class="pap-card-inner">
+          <div class="pap-left">
+            <div class="pap-eyebrow">
+              🦋 IMAGE CLASSIFICATION &nbsp;·&nbsp; DEEP LEARNING
+            </div>
+            <span class="project-tag pap-tag">Python · PyTorch · FastAPI · Next.js</span>
+            <h3 class="pap-title">Papillon</h3>
+            <p class="pap-desc">
+              Four neural network architectures trained to classify 10 butterfly and moth species from
+              images. From a simple MLP baseline to ResNet-18 with ImageNet pretraining — the same dataset,
+              four models, one clear winner.
+            </p>
+            <p class="pap-desc">
+              A FastAPI backend serves all four models simultaneously, while a Next.js frontend lets you
+              upload your own image or pick from test photos to compare predictions side by side. Includes
+              per-class accuracy breakdowns and reflections on why pretrained models dominate.
+            </p>
+            <div class="pap-species">
+              <div class="pap-species-label">10 species</div>
+              <div class="pap-species-items">
+                Mourning Cloak · Green Hairstreak · Brown Argus · Brookes Birdwing · Sleepy Orange<br>
+                Chalk Hill Blue · Atala · Humming Bird Hawk Moth · White Lined Sphinx Moth · Arcigera Flower Moth
+              </div>
+            </div>
+          </div>
+          <div class="pap-right">
+            <div class="pap-section-label">Model Performance</div>
+            <div class="pap-models">
+              <div class="pap-model">
+                <div class="pap-model-header">
+                  <span class="pap-model-name">MLP</span>
+                  <span class="pap-model-acc" style="color:#818cf8">80%</span>
+                </div>
+                <div class="pap-bar-track"><div class="pap-bar" style="width:80%;background:#818cf8"></div></div>
+                <span class="pap-model-meta">25.3M params &nbsp;·&nbsp; 0.8 min</span>
+              </div>
+              <div class="pap-model">
+                <div class="pap-model-header">
+                  <span class="pap-model-name">CNN</span>
+                  <span class="pap-model-acc" style="color:#34d399">92%</span>
+                </div>
+                <div class="pap-bar-track"><div class="pap-bar" style="width:92%;background:#34d399"></div></div>
+                <span class="pap-model-meta">1.2M params &nbsp;·&nbsp; 1.0 min</span>
+              </div>
+              <div class="pap-model">
+                <div class="pap-model-header">
+                  <span class="pap-model-name">EfficientNet-B0</span>
+                  <span class="pap-model-acc" style="color:#f472b6">98%</span>
+                </div>
+                <div class="pap-bar-track"><div class="pap-bar" style="width:98%;background:#f472b6"></div></div>
+                <span class="pap-model-meta">4.0M params &nbsp;·&nbsp; 1.1 min</span>
+              </div>
+              <div class="pap-model pap-model--winner">
+                <div class="pap-model-header">
+                  <span class="pap-model-name">ResNet-18</span>
+                  <span class="pap-model-acc" style="color:#a78bfa">100% ✓</span>
+                </div>
+                <div class="pap-bar-track"><div class="pap-bar" style="width:100%;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div></div>
+                <span class="pap-model-meta">11.2M params &nbsp;·&nbsp; 0.9 min</span>
+              </div>
+            </div>
+            <div class="pap-section-label" style="margin-top:1.4rem;">Stack</div>
+            <div class="pap-stack">
+              <span class="pap-pill">PyTorch</span>
+              <span class="pap-pill">FastAPI</span>
+              <span class="pap-pill">Next.js</span>
+              <span class="pap-pill">TypeScript</span>
+              <span class="pap-pill">ResNet-18</span>
+              <span class="pap-pill">EfficientNet-B0</span>
+              <span class="pap-pill">HuggingFace Spaces</span>
+              <span class="pap-pill">Vercel</span>
+            </div>
+          </div>
+        </div>
+        <div class="pap-card-footer">
+          <a href="https://papillon-beta.vercel.app/" class="pap-live-btn" target="_blank" rel="noopener" data-project="Papillon">🦋 Live App</a>
+          <a href="https://github.com/tomasbejholt" class="pap-ghost-btn" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
     </div>
 
     <!-- ══ MODALS ══ -->
