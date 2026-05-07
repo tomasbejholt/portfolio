@@ -468,12 +468,14 @@ class AuthRequest(BaseModel):
 
 async def send_discord(message: str):
     if not DISCORD_WEBHOOK:
+        print("DISCORD: webhook not configured")
         return
     try:
         async with httpx.AsyncClient() as client:
-            await client.post(DISCORD_WEBHOOK, json={"content": message}, timeout=5)
-    except Exception:
-        pass
+            r = await client.post(DISCORD_WEBHOOK, json={"content": message}, timeout=5)
+            print(f"DISCORD: sent, status={r.status_code}")
+    except Exception as e:
+        print(f"DISCORD: error={e}")
 
 
 BOT_PATTERNS = [
@@ -532,11 +534,13 @@ async def track(ev: TrackEvent, request: Request):
         now = time.time()
         already_notified_visitor = vid in _notified_visitors
         already_notified_ip      = ip and ip in _notified_ips
+        print(f"TRACK: page={ev.page} vid={vid[:8]} already_visitor={already_notified_visitor} already_ip={already_notified_ip}")
 
         if not already_notified_visitor and not already_notified_ip:
             # Check DB as authoritative source
             is_new = not supabase.table("events") \
                 .select("id").eq("visitor_id", vid).limit(1).execute().data
+            print(f"TRACK: is_new={is_new}")
             if is_new:
                 _notified_visitors[vid] = now
                 if ip:
