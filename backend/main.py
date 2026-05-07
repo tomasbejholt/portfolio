@@ -539,7 +539,7 @@ async def track(ev: TrackEvent, request: Request):
         if not already_notified_visitor and not already_notified_ip:
             # Check DB as authoritative source
             is_new = not supabase.table("events") \
-                .select("id").eq("visitor_id", vid).limit(1).execute().data
+                .select("id").eq("visitor_id", vid).neq("page", "home").limit(1).execute().data
             print(f"TRACK: is_new={is_new}")
             if is_new:
                 _notified_visitors[vid] = now
