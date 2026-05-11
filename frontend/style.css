@@ -2482,6 +2482,244 @@ footer {
 }
 
 /* =========================
+   BASKETBALL TRACKER CARD
+   ========================= */
+
+.bball-card {
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(249,115,22,0.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 90% 100%, rgba(234,88,12,0.10) 0%, transparent 50%),
+    linear-gradient(rgba(249,115,22,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249,115,22,0.025) 1px, transparent 1px),
+    #0b0a06;
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  border: 1px solid rgba(249,115,22,0.22);
+  border-top: 2px solid #f97316;
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 40px rgba(249,115,22,0.10), 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.bball-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(249,115,22,0.18), 0 4px 16px rgba(0,0,0,0.4);
+}
+
+.bball-card-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.bball-left {
+  padding: 28px 28px 24px;
+  border-right: 1px solid rgba(249,115,22,0.12);
+}
+
+.bball-right {
+  padding: 28px 28px 24px;
+}
+
+.bball-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fb923c;
+  font-family: monospace;
+  margin-bottom: 10px;
+}
+
+.bball-tag {
+  background: rgba(249,115,22,0.08) !important;
+  color: rgba(251,146,60,0.85) !important;
+  border: 1px solid rgba(249,115,22,0.20) !important;
+}
+
+.bball-title {
+  margin: 10px 0 12px;
+  font-size: 1.15rem;
+  color: #e6edf3;
+  letter-spacing: -0.2px;
+}
+
+.bball-desc {
+  font-size: 0.87rem;
+  line-height: 1.75;
+  color: #8b949e;
+  margin: 0 0 12px;
+}
+
+.bball-section-label {
+  font-size: 0.60rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(249,115,22,0.65);
+  font-family: monospace;
+  margin-bottom: 12px;
+}
+
+.bball-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.bball-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bball-metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.bball-metric-name {
+  font-size: 0.80rem;
+  font-weight: 600;
+  color: #e6edf3;
+}
+
+.bball-metric-val {
+  font-size: 0.80rem;
+  font-weight: 700;
+  font-family: monospace;
+  color: #f97316;
+}
+
+.bball-bar-track {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bball-bar {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #ea580c, #f97316);
+}
+
+.bball-metric-desc {
+  font-size: 0.68rem;
+  color: rgba(139,148,158,0.65);
+  font-family: monospace;
+}
+
+.bball-features {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bball-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #8b949e;
+  line-height: 1.5;
+}
+
+.bball-chevron {
+  color: #f97316;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.bball-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bball-pill {
+  font-size: 0.7rem;
+  font-family: monospace;
+  padding: 3px 9px;
+  border-radius: 3px;
+  background: rgba(249,115,22,0.07);
+  border: 1px solid rgba(249,115,22,0.18);
+  color: rgba(251,146,60,0.80);
+  letter-spacing: 0.04em;
+}
+
+.bball-card-footer {
+  padding: 14px 28px 24px;
+  border-top: 1px solid rgba(249,115,22,0.10);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.bball-live-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  font-size: 0.78rem;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fb923c;
+  border: 1px solid rgba(249,115,22,0.55);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.bball-live-btn:hover {
+  background: rgba(249,115,22,0.12);
+  box-shadow: 0 0 18px rgba(249,115,22,0.28);
+  border-color: #f97316;
+  color: #fb923c;
+}
+
+.bball-live-btn:visited { color: #fb923c; }
+
+.bball-ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  font-size: 0.78rem;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8b949e;
+  border: 1px solid rgba(139,148,158,0.3);
+  border-radius: 3px;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.bball-ghost-btn:hover {
+  background: rgba(139,148,158,0.08);
+  border-color: rgba(139,148,158,0.55);
+  color: #e6edf3;
+}
+
+@media (max-width: 768px) {
+  .bball-card-inner {
+    grid-template-columns: 1fr;
+  }
+  .bball-left {
+    border-right: none;
+    border-bottom: 1px solid rgba(249,115,22,0.12);
+    padding-bottom: 20px;
+  }
+}
+
+/* =========================
    ANALYTICS TRIGGER & DASHBOARD
    ========================= */
 

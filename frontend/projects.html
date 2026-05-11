@@ -307,6 +307,111 @@
           <a href="https://github.com/tomasbejholt" class="kris-ghost-btn" target="_blank" rel="noopener">GitHub</a>
         </div>
       </div>
+      <!-- ── BASKETBALL TRACKER ── -->
+      <div class="bball-card fade-in" style="grid-column: 1 / -1;">
+        <div class="bball-card-inner">
+          <div class="bball-left">
+            <div class="bball-eyebrow">
+              🏀 OBJECT DETECTION &nbsp;·&nbsp; COMPUTER VISION
+            </div>
+            <span class="project-tag bball-tag">Python · YOLOv8n · ByteTrack · FastAPI · Next.js</span>
+            <h3 class="bball-title">Basketball Tracker</h3>
+            <p class="bball-desc">
+              A YOLOv8 nano model fine-tuned on ~4 300 basketball images from Roboflow.
+              Upload any basketball clip and AI tracks the ball frame by frame, rendering
+              a glowing neon motion trail in your chosen color.
+            </p>
+            <p class="bball-desc">
+              When tracking completes, an AI commentator powered by ElevenLabs reacts to
+              the result live — crowd audio, your name, and a color-specific punchline
+              included. Confidence threshold and trail length are fully adjustable.
+            </p>
+            <div class="bball-section-label">Features</div>
+            <ul class="bball-features">
+              <li><span class="bball-chevron">›</span>Real-time YOLOv8n inference with ByteTrack multi-object tracking</li>
+              <li><span class="bball-chevron">›</span>4 neon trail colors — Neon Green, Hot Pink, Laser Orange, Purple Lightning</li>
+              <li><span class="bball-chevron">›</span>AI commentator via ElevenLabs TTS — reacts by name and trail color</li>
+              <li><span class="bball-chevron">›</span>Frame-by-frame progress bar during inference</li>
+              <li><span class="bball-chevron">›</span>Video library of preset basketball clips</li>
+              <li><span class="bball-chevron">›</span>Download processed MP4</li>
+            </ul>
+          </div>
+          <div class="bball-right">
+            <div class="bball-section-label">Model Performance</div>
+            <div class="bball-metrics">
+              <div class="bball-metric">
+                <div class="bball-metric-header">
+                  <span class="bball-metric-name">mAP50</span>
+                  <span class="bball-metric-val">80.3%</span>
+                </div>
+                <div class="bball-bar-track"><div class="bball-bar" style="width:80.3%"></div></div>
+                <span class="bball-metric-desc">Mean average precision at IoU 0.5</span>
+              </div>
+              <div class="bball-metric">
+                <div class="bball-metric-header">
+                  <span class="bball-metric-name">Precision</span>
+                  <span class="bball-metric-val">84.2%</span>
+                </div>
+                <div class="bball-bar-track"><div class="bball-bar" style="width:84.2%"></div></div>
+                <span class="bball-metric-desc">Of all predicted boxes, how many were correct</span>
+              </div>
+              <div class="bball-metric">
+                <div class="bball-metric-header">
+                  <span class="bball-metric-name">Recall</span>
+                  <span class="bball-metric-val">70.5%</span>
+                </div>
+                <div class="bball-bar-track"><div class="bball-bar" style="width:70.5%"></div></div>
+                <span class="bball-metric-desc">Of all real balls, how many were found</span>
+              </div>
+              <div class="bball-metric">
+                <div class="bball-metric-header">
+                  <span class="bball-metric-name">mAP50–95</span>
+                  <span class="bball-metric-val">55.3%</span>
+                </div>
+                <div class="bball-bar-track"><div class="bball-bar" style="width:55.3%"></div></div>
+                <span class="bball-metric-desc">Stricter metric across IoU 0.5–0.95</span>
+              </div>
+            </div>
+            <div class="bball-section-label">Training</div>
+            <div class="bball-metrics" style="margin-bottom:20px">
+              <div class="bball-metric">
+                <div class="bball-metric-header">
+                  <span class="bball-metric-name" style="font-size:0.75rem;color:#8b949e">Dataset</span>
+                  <span class="bball-metric-val" style="font-size:0.75rem">~4 300 images · Roboflow</span>
+                </div>
+              </div>
+              <div class="bball-metric">
+                <div class="bball-metric-header">
+                  <span class="bball-metric-name" style="font-size:0.75rem;color:#8b949e">Epochs · GPU</span>
+                  <span class="bball-metric-val" style="font-size:0.75rem">50 · NVIDIA L4 (Colab Pro)</span>
+                </div>
+              </div>
+              <div class="bball-metric">
+                <div class="bball-metric-header">
+                  <span class="bball-metric-name" style="font-size:0.75rem;color:#8b949e">Model size · Speed</span>
+                  <span class="bball-metric-val" style="font-size:0.75rem">6.2 MB · 0.5 ms/frame</span>
+                </div>
+              </div>
+            </div>
+            <div class="bball-section-label">Stack</div>
+            <div class="bball-stack">
+              <span class="bball-pill">YOLOv8n</span>
+              <span class="bball-pill">ByteTrack</span>
+              <span class="bball-pill">Python</span>
+              <span class="bball-pill">FastAPI</span>
+              <span class="bball-pill">Next.js</span>
+              <span class="bball-pill">TypeScript</span>
+              <span class="bball-pill">ElevenLabs</span>
+              <span class="bball-pill">Vercel</span>
+            </div>
+          </div>
+        </div>
+        <div class="bball-card-footer">
+          <a href="https://basketball-tracker-nu.vercel.app/" class="bball-live-btn" target="_blank" rel="noopener" data-project="Basketball Tracker">🏀 Live App</a>
+          <a href="https://github.com/tomasbejholt" class="bball-ghost-btn" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+
       <!-- ── PAPILLON ── -->
       <div class="pap-card fade-in" style="grid-column: 1 / -1;">
         <div class="pap-card-inner">
