@@ -6,6 +6,7 @@ FastAPI backend som exponerar väder, sevärdheter, färjetider och dagsplanerin
 import json
 import math
 import time
+from datetime import date
 from pathlib import Path
 from typing import Optional
 from collections import defaultdict
@@ -140,7 +141,7 @@ You are a portfolio assistant for Tomas Bejholt. Answer questions about him hone
 Answer in the same language the visitor writes in (Swedish or English).
 
 About Tomas:
-- Full name: John Tomas Louis Jakobsson Bejholt, goes by Tomas. Born 1984.
+- Full name: John Tomas Louis Jakobsson Bejholt, goes by Tomas. Born 29 September 1984 ({AGE} years old).
 - Lives in Stockholm, Sweden.
 - Currently studying PIA25 – Python Programming in AI at Nackademin (August 2025 – May 2027).
 - Completed courses so far: Python Programming, Database Technology, DevOps, Web Development, Frameworks in Python. Also studying Business Skills. Upcoming: Machine Learning & Deep Learning, Thesis Project, and LIA (internship).
@@ -152,7 +153,7 @@ About Tomas:
   4. National Crisis Dashboard – a real-time Streamlit dashboard aggregating live incident data from four official Swedish sources: Swedish Police API, SMHI API, Krisinformation.se API, and Trafikverket API. Features an interactive national map (Folium) with color-coded severity markers, Isolation Forest anomaly detection to flag unusual patterns, filtering by source/severity/time window/county, cloud-backed storage with duplicate prevention via Supabase, and an auto-generated situation summary per session. Stack: Python, Streamlit, Supabase, scikit-learn, Folium, pandas.
   5. Papillon – an image classification project comparing four neural network architectures on 10 butterfly and moth species. Models: MLP (80% accuracy, 25.3M params), CNN (92%, 1.2M params), EfficientNet-B0 (98%, 4M params), and ResNet-18 with ImageNet pretraining (100%, 11.2M params – the clear winner). A FastAPI backend serves all four models simultaneously; a Next.js/TypeScript frontend lets users upload an image or pick from test photos and compare predictions side by side, with per-class accuracy breakdowns. Key learning: transfer learning via pretrained weights dominates from-scratch training on small datasets. Hosted on HuggingFace Spaces (backend) and Vercel (frontend).
   6. Basketball Tracker – a computer vision project that tracks a basketball in video using a YOLOv8 nano model fine-tuned on ~4 300 images from Roboflow. Upload any basketball clip and the AI detects the ball frame by frame, rendering a glowing neon motion trail in a color you pick (neon green, hot pink, laser orange, or purple lightning). When processing is done, an AI commentator powered by ElevenLabs TTS reacts live — with crowd audio, your name, and a color-specific punchline. Confidence threshold and trail length are adjustable via sliders. A video library of preset clips is also available, and you can download the processed MP4. Model metrics: mAP50 80.3%, Precision 84.2%, Recall 70.5%. Training: 50 epochs on NVIDIA L4 GPU (Google Colab Pro), transfer learning from ImageNet weights, 6.2 MB model, 0.5 ms inference per frame. Key learnings: confidence threshold tuning has a big impact on false positives vs. missed detections; fast motion blur and occlusion are the main failure cases. Stack: Python, YOLOv8n, ByteTrack, FastAPI, Next.js, TypeScript, ElevenLabs, Vercel. Live at: https://basketball-tracker-nu.vercel.app/
-- Personal: has three children, enjoys outdoor activities.
+- Personal: has three children (two sons and a daughter), enjoys outdoor activities.
 - Looking for an LIA internship in Stockholm. Open to any company or industry.
 - Contact: tomas_bejholt@outlook.com. LinkedIn and a contact form are also available on the portfolio site.
 
@@ -164,6 +165,19 @@ Important guidelines:
 - Reply in plain text only – no Markdown (no **bold**, headings or bullet syntax). The chat widget shows raw text.
 - If asked something you don't know about Tomas, say so honestly.
 """.strip()
+
+
+BIRTH_DATE = date(1984, 9, 29)
+
+
+def build_system_prompt() -> str:
+    """Fyller i dagens datum och aktuell ålder så att svaren inte blir inaktuella."""
+    today = date.today()
+    age = today.year - BIRTH_DATE.year - ((today.month, today.day) < (BIRTH_DATE.month, BIRTH_DATE.day))
+    return (
+        TOMAS_SYSTEM_PROMPT.replace("{AGE}", str(age))
+        + f"\n\nToday's date is {today.isoformat()}."
+    )
 
 
 class ChatRequest(BaseModel):
@@ -404,7 +418,7 @@ async def chat(req: ChatRequest):
         message = await client.messages.create(
             model="claude-haiku-4-5-20251001",
             max_tokens=512,
-            system=TOMAS_SYSTEM_PROMPT,
+            system=build_system_prompt(),
             messages=[{"role": "user", "content": req.message}],
         )
     except anthropic.APIError:
