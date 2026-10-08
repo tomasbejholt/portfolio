@@ -278,7 +278,7 @@
             <div class="kris-sources-grid">
               <div class="kris-source"><span class="ks-dot ks-red"></span>Swedish Police API</div>
               <div class="kris-source"><span class="ks-dot ks-red"></span>SMHI API</div>
-              <div class="kris-source"><span class="ks-dot ks-orange"></span>Krisinformation.se RSS</div>
+              <div class="kris-source"><span class="ks-dot ks-orange"></span>Krisinformation.se API</div>
               <div class="kris-source"><span class="ks-dot ks-yellow"></span>Trafikverket API</div>
             </div>
           </div>
@@ -953,10 +953,17 @@
         async function fetchScores() {
           try {
             const res = await fetch(`${API_SCORES}?mode=${mode}`);
-            globalScores = await res.json();
+            const data = res.ok ? await res.json() : [];
+            globalScores = Array.isArray(data) ? data : [];
           } catch (_) {
             globalScores = [];
           }
+        }
+
+        function escapeHtml(str) {
+          return String(str).replace(/[&<>"']/g, (c) => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+          })[c]);
         }
 
         function buildRows(scores) {
@@ -966,7 +973,7 @@
             .slice(0, 10)
             .map(
               (s, i) =>
-                `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`,
+                `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${escapeHtml(s.name)}</span><span class="lb-score">${s.score}</span></li>`,
             )
             .join("");
         }
@@ -999,7 +1006,7 @@
                 <span class="lb-score">${s.score}</span>
               </li>`;
               }
-              return `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${s.name}</span><span class="lb-score">${s.score}</span></li>`;
+              return `<li><span class="lb-rank">${i + 1}</span><span class="lb-name">${escapeHtml(s.name)}</span><span class="lb-score">${s.score}</span></li>`;
             })
             .join("");
 
@@ -1036,7 +1043,8 @@
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ name, score, mode }),
             });
-            globalScores = await res.json();
+            const data = res.ok ? await res.json() : null;
+            if (Array.isArray(data)) globalScores = data;
           } catch (_) {}
           showStartScreen();
         }

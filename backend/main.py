@@ -16,7 +16,7 @@ import anthropic
 import httpx
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from supabase import create_client
 
 # ── App & CORS ────────────────────────────────────────────────────────────────
@@ -140,7 +140,7 @@ You are a portfolio assistant for Tomas Bejholt. Answer questions about him hone
 Answer in the same language the visitor writes in (Swedish or English).
 
 About Tomas:
-- Full name: John Tomas Louis Jakobsson Bejholt, goes by Tomas. Born 1984, 41 years old.
+- Full name: John Tomas Louis Jakobsson Bejholt, goes by Tomas. Born 1984.
 - Lives in Stockholm, Sweden.
 - Currently studying PIA25 – Python Programming in AI at Nackademin (August 2025 – May 2027).
 - Completed courses so far: Python Programming, Database Technology, DevOps, Web Development, Frameworks in Python. Also studying Business Skills. Upcoming: Machine Learning & Deep Learning, Thesis Project, and LIA (internship).
@@ -149,7 +149,7 @@ About Tomas:
   1. Neon Snake – classic Snake with a neon aesthetic, built in vanilla JavaScript and Canvas API. Features Easy/Hard modes and a live global leaderboard backed by FastAPI and Supabase.
   2. Gotland Explorer – a REST API built with Python and FastAPI, serving live Gotland data: real-time SMHI weather, curated places, ferry schedules, and a day-trip planner. Hosted on Render.
   3. Churn Prediction – a full ML app predicting customer churn for a telecom company. Three models trained on imbalanced data (73/27 split): Random Forest (baseline), MLP with PyTorch (best recall: 0.84), and LightGBM (best overall: AUC-ROC 0.85, F1 0.63). Served via FastAPI, with a multi-page Streamlit UI for live predictions, model comparison, SHAP feature importance, learning curves, and EDA. Key learnings: recall matters more than accuracy on imbalanced data, pos_weight helped MLP find churned customers, and all preprocessing must happen after train/test split to avoid data leakage.
-  4. National Crisis Dashboard – a real-time Streamlit dashboard aggregating live incident data from four official Swedish sources: Swedish Police API, SMHI API, Krisinformation.se RSS, and Trafikverket API. Features an interactive national map (Folium) with color-coded severity markers, Isolation Forest anomaly detection to flag unusual patterns, filtering by source/severity/time window/county, cloud-backed storage with duplicate prevention via Supabase, and an auto-generated situation summary per session. Stack: Python, Streamlit, Supabase, scikit-learn, Folium, pandas.
+  4. National Crisis Dashboard – a real-time Streamlit dashboard aggregating live incident data from four official Swedish sources: Swedish Police API, SMHI API, Krisinformation.se API, and Trafikverket API. Features an interactive national map (Folium) with color-coded severity markers, Isolation Forest anomaly detection to flag unusual patterns, filtering by source/severity/time window/county, cloud-backed storage with duplicate prevention via Supabase, and an auto-generated situation summary per session. Stack: Python, Streamlit, Supabase, scikit-learn, Folium, pandas.
   5. Papillon – an image classification project comparing four neural network architectures on 10 butterfly and moth species. Models: MLP (80% accuracy, 25.3M params), CNN (92%, 1.2M params), EfficientNet-B0 (98%, 4M params), and ResNet-18 with ImageNet pretraining (100%, 11.2M params – the clear winner). A FastAPI backend serves all four models simultaneously; a Next.js/TypeScript frontend lets users upload an image or pick from test photos and compare predictions side by side, with per-class accuracy breakdowns. Key learning: transfer learning via pretrained weights dominates from-scratch training on small datasets. Hosted on HuggingFace Spaces (backend) and Vercel (frontend).
   6. Basketball Tracker – a computer vision project that tracks a basketball in video using a YOLOv8 nano model fine-tuned on ~4 300 images from Roboflow. Upload any basketball clip and the AI detects the ball frame by frame, rendering a glowing neon motion trail in a color you pick (neon green, hot pink, laser orange, or purple lightning). When processing is done, an AI commentator powered by ElevenLabs TTS reacts live — with crowd audio, your name, and a color-specific punchline. Confidence threshold and trail length are adjustable via sliders. A video library of preset clips is also available, and you can download the processed MP4. Model metrics: mAP50 80.3%, Precision 84.2%, Recall 70.5%. Training: 50 epochs on NVIDIA L4 GPU (Google Colab Pro), transfer learning from ImageNet weights, 6.2 MB model, 0.5 ms inference per frame. Key learnings: confidence threshold tuning has a big impact on false positives vs. missed detections; fast motion blur and occlusion are the main failure cases. Stack: Python, YOLOv8n, ByteTrack, FastAPI, Next.js, TypeScript, ElevenLabs, Vercel. Live at: https://basketball-tracker-nu.vercel.app/
 - Personal: has three children, enjoys outdoor activities.
@@ -161,12 +161,13 @@ The last project in the list above is always the most recent one.
 Important guidelines:
 - Tomas is a student actively learning – never claim he is an expert or highly skilled in any area yet. Be honest about where he is in his journey.
 - Keep answers short, friendly, and to the point.
+- Reply in plain text only – no Markdown (no **bold**, headings or bullet syntax). The chat widget shows raw text.
 - If asked something you don't know about Tomas, say so honestly.
 """.strip()
 
 
 class ChatRequest(BaseModel):
-    message: str
+    message: str = Field(..., min_length=1, max_length=500)
 
 
 class ScoreEntry(BaseModel):
@@ -398,14 +399,35 @@ async def chat(req: ChatRequest):
     if not api_key:
         raise HTTPException(status_code=500, detail="Chat is not configured.")
 
-    client = anthropic.Anthropic(api_key=api_key)
-    message = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=512,
-        system=TOMAS_SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": req.message}],
-    )
+    client = anthropic.AsyncAnthropic(api_key=api_key)
+    try:
+        message = await client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=512,
+            system=TOMAS_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": req.message}],
+        )
+    except anthropic.APIError:
+        raise HTTPException(status_code=503, detail="Chat is temporarily unavailable.")
     return {"reply": message.content[0].text}
+
+
+def top_scores(mode: str) -> list:
+    """Hämtar top-10 för valt läge. Kastar 503 om databasen inte svarar."""
+    if not supabase:
+        raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
+    try:
+        res = (
+            supabase.table("scores")
+            .select("name, score")
+            .eq("mode", mode)
+            .order("score", desc=True)
+            .limit(10)
+            .execute()
+        )
+    except Exception:
+        raise HTTPException(status_code=503, detail="Databasen svarar inte.")
+    return res.data
 
 
 @app.get("/api/scores", tags=["snake"])
@@ -413,17 +435,7 @@ async def get_scores(mode: str = Query("easy", description="Läge: easy | hard")
     """Returnerar top-10 highscore-listan för valt läge (easy eller hard)."""
     if mode not in ("easy", "hard"):
         raise HTTPException(status_code=422, detail="mode måste vara 'easy' eller 'hard'.")
-    if not supabase:
-        raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
-    res = (
-        supabase.table("scores")
-        .select("name, score")
-        .eq("mode", mode)
-        .order("score", desc=True)
-        .limit(10)
-        .execute()
-    )
-    return res.data
+    return top_scores(mode)
 
 
 @app.post("/api/scores", tags=["snake"])
@@ -438,17 +450,12 @@ async def post_score(entry: ScoreEntry):
     if not supabase:
         raise HTTPException(status_code=503, detail="Databasen är inte konfigurerad.")
 
-    supabase.table("scores").insert({"name": name, "score": entry.score, "mode": mode}).execute()
+    try:
+        supabase.table("scores").insert({"name": name, "score": entry.score, "mode": mode}).execute()
+    except Exception:
+        raise HTTPException(status_code=503, detail="Databasen svarar inte.")
 
-    res = (
-        supabase.table("scores")
-        .select("name, score")
-        .eq("mode", mode)
-        .order("score", desc=True)
-        .limit(10)
-        .execute()
-    )
-    return res.data
+    return top_scores(mode)
 
 
 # ── Analytics ─────────────────────────────────────────────────────────────────
@@ -526,6 +533,14 @@ async def track(ev: TrackEvent, request: Request):
 
     _clean_notified()
 
+    try:
+        await _store_track(ev, request)
+    except Exception:
+        return {"ok": False}
+    return {"ok": True}
+
+
+async def _store_track(ev: TrackEvent, request: Request):
     vid = ev.visitor_id[:64]
     ip  = request.headers.get("x-forwarded-for", request.client.host if request.client else "").split(",")[0].strip()
 
@@ -550,8 +565,6 @@ async def track(ev: TrackEvent, request: Request):
         "event":      ev.event[:32],
         "data":       ev.data[:64] if ev.data else None,
     }).execute()
-
-    return {"ok": True}
 
 
 @app.post("/api/analytics/auth", tags=["analytics"], include_in_schema=False)
